@@ -1,4 +1,3 @@
-
 #! /bin/bash
 #
 # Script to clone, build and copy the official web client to serve it from
