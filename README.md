@@ -42,6 +42,14 @@ $ cd apps/bitwardex_web
 $ bash download_web_client.sh
 ```
 
+The code downloaded is from official web vault repository, so they are open
+source contributions of 8bit Solutions LLC. and their collaborators, not being
+included or distributed directly with this project.
+
+Any logo or trademark included in the web vault remains property of their
+legal owner and serving them from this projects means no attribution from
+Bitwardex.
+
 ## Start the project
 
 If you have followed the setup instructions, you can start the server running:
