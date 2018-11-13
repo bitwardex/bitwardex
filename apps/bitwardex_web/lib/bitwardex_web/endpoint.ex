@@ -5,6 +5,8 @@ defmodule BitwardexWeb.Endpoint do
     websocket: true,
     longpoll: false
 
+  plug BitwardexWeb.IndexFilePlug
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phx.digest
@@ -12,8 +14,9 @@ defmodule BitwardexWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :bitwardex_web,
-    gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    gzip: true,
+    only:
+      ~w(app connectors fonts images locales scripts browserconfig.xml duo-connector.html favicon.ico index.html manifest.json u2f-connector.html version.json)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
