@@ -12,6 +12,8 @@ erl_crash.dump
 *.beam
 /config/*.secret.exs
 /apps/*/config/*.secret.exs
+/apps/*/tmp/
+/apps/*/priv/static/
 
 ### Elixir Patch ###
 
