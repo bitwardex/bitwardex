@@ -6,7 +6,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
-    field :culture, :string
+    field :culture, :string, default: "en-US"
     field :email, :string
     field :email_verified, :boolean, default: false
     field :kdf, :integer

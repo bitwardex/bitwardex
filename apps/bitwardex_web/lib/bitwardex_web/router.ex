@@ -7,5 +7,8 @@ defmodule BitwardexWeb.Router do
 
   scope "/api", BitwardexWeb do
     pipe_through :api
+
+    post "/accounts/register", AccountsController, :register
+    post "/accounts/prelogin", AccountsController, :prelogin
   end
 end
