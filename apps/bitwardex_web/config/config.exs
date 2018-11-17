@@ -16,6 +16,8 @@ config :bitwardex_web, BitwardexWeb.Endpoint,
   render_errors: [view: BitwardexWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: BitwardexWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :bitwardex_web, :generators, context_app: :bitwardex
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
