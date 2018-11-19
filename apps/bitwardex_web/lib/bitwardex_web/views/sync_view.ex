@@ -1,19 +1,12 @@
 defmodule BitwardexWeb.SyncView do
   use BitwardexWeb, :view
 
-  # If you want to customize a particular status code
-  # for a certain format, you may uncomment below.
-  # def render("500.json", _assigns) do
-  #   %{errors: %{detail: "Internal Server Error"}}
-  # end
+  alias BitwardexWeb.FoldersView
 
-  # By default, Phoenix returns the status message from
-  # the template name. For example, "404.json" becomes
-  # "Not Found".
   def render("sync.json", %{current_user: user, exclude_domains: true}) do
     %{
       "Profile" => render_profile(user),
-      "Folders" => [],
+      "Folders" => render_folders(user.folders),
       "Ciphers" => [],
       "Object" => "sync"
     }
@@ -45,5 +38,11 @@ defmodule BitwardexWeb.SyncView do
       "Organizations" => [],
       "Object" => "profile"
     }
+  end
+
+  def render_folders(folders) do
+    Enum.map(folders, fn folder ->
+      render(FoldersView, "show.json", folder: folder)
+    end)
   end
 end

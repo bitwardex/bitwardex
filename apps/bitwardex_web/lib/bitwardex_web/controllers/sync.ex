@@ -5,8 +5,14 @@ defmodule BitwardexWeb.SyncController do
 
   use BitwardexWeb, :controller
 
+  alias Bitwardex.Repo
+
   def sync(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user =
+      conn
+      |> BitwardexWeb.Guardian.Plug.current_resource()
+      |> Repo.preload(:folders)
+
     exclude_domains = Map.get(params, "excludeDomains") == "true"
 
     conn

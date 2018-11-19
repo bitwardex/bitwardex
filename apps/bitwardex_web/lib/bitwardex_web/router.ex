@@ -13,10 +13,12 @@ defmodule BitwardexWeb.Router do
     post "/accounts/register", AccountsController, :register
     post "/accounts/prelogin", AccountsController, :prelogin
 
-    scope "" do
+    scope "/" do
       pipe_through(GuardianAuthPipeline)
 
       get "/sync", SyncController, :sync
+
+      resources "/folders", FoldersController, only: [:create, :update, :delete]
     end
   end
 
