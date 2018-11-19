@@ -10,6 +10,15 @@ defmodule BitwardexWeb.SyncView do
   # By default, Phoenix returns the status message from
   # the template name. For example, "404.json" becomes
   # "Not Found".
+  def render("sync.json", %{current_user: user, exclude_domains: true}) do
+    %{
+      "Profile" => render_profile(user),
+      "Folders" => [],
+      "Ciphers" => [],
+      "Object" => "sync"
+    }
+  end
+
   def render("sync.json", %{current_user: user}) do
     %{
       "Profile" => render_profile(user),
