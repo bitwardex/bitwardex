@@ -42,30 +42,55 @@ defmodule BitwardexWeb.AccountsController do
   def login(conn, %{"username" => username, "password" => password, "grant_type" => "password"}) do
     case Accounts.get_user_by_email(username) do
       {:ok, %User{master_password_hash: ^password} = user} ->
-        claims = Accounts.generate_user_claims(user)
-
-        {:ok, access_token, _claims} =
-          BitwardexWeb.Guardian.encode_and_sign(user, claims, token_type: "access")
-
-        {:ok, refresh_token, _claims} =
-          BitwardexWeb.Guardian.encode_and_sign(user, claims, token_type: "refresh")
-
-        conn
-        |> put_status(200)
-        |> json(%{
-          "access_token" => access_token,
-          "expires_in" => 3600,
-          "token_type" => "Bearer",
-          "refresh_token" => refresh_token,
-          "Key" => user.key
-        })
+        generate_user_session(conn, user)
 
       _error ->
         invalid_user_response(conn)
     end
   end
 
+  def login(conn, %{"grant_type" => "refresh_token", "refresh_token" => token}) do
+    with {:ok, _claims} <- BitwardexWeb.Guardian.decode_and_verify(token, %{"typ" => "refresh"}),
+         {:ok, user, _claims} <- BitwardexWeb.Guardian.resource_from_token(token) do
+      generate_user_session(conn, user)
+    else
+      _ ->
+        invalid_user_response(conn)
+    end
+  end
+
   def login(conn, _params), do: invalid_user_response(conn)
+
+  defp generate_user_session(conn, user) do
+    claims = Accounts.generate_user_claims(user)
+
+    ttl = 60 * 60
+
+    {:ok, access_token, _claims} =
+      BitwardexWeb.Guardian.encode_and_sign(user, claims,
+        ttl: {ttl, :seconds},
+        token_type: "access"
+      )
+
+    # TODO: Move this to database and generate a ransom base64 string instead.
+    # This is set to (almost) unlimited TTL because it doesn't have to change
+    # in the response.
+    {:ok, refresh_token, _claims} =
+      BitwardexWeb.Guardian.encode_and_sign(user, claims,
+        ttl: {1, :week},
+        token_type: "refresh"
+      )
+
+    conn
+    |> put_status(200)
+    |> json(%{
+      "access_token" => access_token,
+      "expires_in" => ttl,
+      "token_type" => "Bearer",
+      "refresh_token" => refresh_token,
+      "Key" => user.key
+    })
+  end
 
   defp invalid_user_response(conn) do
     conn
