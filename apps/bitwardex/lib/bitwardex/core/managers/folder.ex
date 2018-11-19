@@ -99,17 +99,4 @@ defmodule Bitwardex.Core.Managers.Folder do
   def delete_folder(%Folder{} = folder) do
     Repo.delete(folder)
   end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking folder changes.
-
-  ## Examples
-
-      iex> change_folder(folder)
-      %Ecto.Changeset{source: %Folder{}}
-
-  """
-  def change_folder(%Folder{} = folder) do
-    Folder.changeset(folder, %{})
-  end
 end
