@@ -9,3 +9,7 @@ use Mix.Config
 config :bitwardex_web, BitwardexWeb.Endpoint,
   http: [port: 4002],
   server: false
+
+config :bitwardex_web, BitwardexWeb.Guardian,
+  issuer: "Bitwardex",
+  secret_key: "FrWXxI962QiA+Z1yzdT8OhL3JDn/wUtIzieCLp3W8thAvTOwgUDOMPj1XJ8HyE9Q"

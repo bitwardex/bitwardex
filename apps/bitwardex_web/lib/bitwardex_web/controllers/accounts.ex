@@ -6,6 +6,7 @@ defmodule BitwardexWeb.AccountsController do
   use BitwardexWeb, :controller
 
   alias Bitwardex.Accounts
+  alias Bitwardex.Accounts.Schemas.User
 
   def register(conn, params) do
     user_params = parse_user_params(params)
@@ -27,6 +28,7 @@ defmodule BitwardexWeb.AccountsController do
           "Kdf" => user.kdf,
           "KdfIterations" => user.kdf_iterations
         })
+
       {:error, :not_found} ->
         # TODO: Check this is correct
         resp(conn, 404, "")
@@ -35,6 +37,56 @@ defmodule BitwardexWeb.AccountsController do
 
   def prelogin(conn, _params) do
     resp(conn, 404, "")
+  end
+
+  def login(conn, %{"username" => username, "password" => password, "grant_type" => "password"}) do
+    case Accounts.get_user_by_email(username) do
+      {:ok, %User{master_password_hash: ^password} = user} ->
+        claims = %{
+          premium: user.premium,
+          name: user.name,
+          email: user.email,
+          email_verified: user.email_verified
+        }
+
+        {:ok, access_token, _claims} =
+          BitwardexWeb.Guardian.encode_and_sign(user, claims, token_type: "access")
+
+        {:ok, refresh_token, _claims} =
+          BitwardexWeb.Guardian.encode_and_sign(user, claims, token_type: "refresh")
+
+        conn
+        |> put_status(200)
+        |> json(%{
+          "access_token" => access_token,
+          "expires_in" => 3600,
+          "token_type" => "Bearer",
+          "refresh_token" => refresh_token,
+          "Key" => user.key
+        })
+
+      _error ->
+        invalid_user_response(conn)
+    end
+  end
+
+  def login(conn, _params), do: invalid_user_response(conn)
+
+  defp invalid_user_response(conn) do
+    conn
+    |> put_status(400)
+    |> json(%{
+      "error" => "invalid_grant",
+      "error_description" => "invalid_username_or_password",
+      "ErrorModel" => %{
+        "Message" => "Username or password is incorrect. Try again.",
+        "ValidationErrors" => nil,
+        "ExceptionMessage" => nil,
+        "ExceptionStackTrace" => nil,
+        "InnerExceptionMessage" => nil,
+        "Object" => "error"
+      }
+    })
   end
 
   defp parse_user_params(params) do

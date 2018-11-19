@@ -18,6 +18,10 @@ config :bitwardex_web, BitwardexWeb.Endpoint,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :bitwardex_web, BitwardexWeb.Guardian,
+  issuer: "Bitwardex",
+  secret_key: "${GUARDIAN_SECRET_KEY}"
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
