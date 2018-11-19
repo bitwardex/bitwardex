@@ -5,6 +5,8 @@
 use Mix.Config
 
 # Configure your database
-config :bitwardex, Bitwardex.Repo, pool: Ecto.Adapters.SQL.Sandbox
-
-import_config("test.secret.exs")
+config :bitwardex, Bitwardex.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "bitwardex_test",
+  hostname: "localhost"
