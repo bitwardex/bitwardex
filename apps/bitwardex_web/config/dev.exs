@@ -17,6 +17,10 @@ config :bitwardex_web, BitwardexWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+config :bitwardex_web, BitwardexWeb.Guardian,
+  issuer: "Bitwardex",
+  secret_key: "y60yLN2yKz1Md/hBRCMNkOLRg4/2y2Ib/7Bg0A3yLzuMEFDJvmvtKSCnunP4aNNT"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
