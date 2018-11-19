@@ -7,7 +7,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
   schema "users" do
     field :culture, :string, default: "en-US"
     field :email, :string
-    field :email_verified, :boolean, default: false
+    field :email_verified, :boolean, default: true
     field :kdf, :integer
     field :kdf_iterations, :integer
     field :key, :string
