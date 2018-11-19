@@ -5,8 +5,8 @@ defmodule Bitwardex.Accounts.Managers.User do
 
   alias Bitwardex.Repo
 
-  alias Bitwardex.Accounts.Schemas.User
   alias Bitwardex.Accounts.Queries.User, as: UserQuery
+  alias Bitwardex.Accounts.Schemas.User
 
   @doc """
   Gets a single user by ID.

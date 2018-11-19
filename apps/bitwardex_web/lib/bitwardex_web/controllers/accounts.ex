@@ -42,12 +42,7 @@ defmodule BitwardexWeb.AccountsController do
   def login(conn, %{"username" => username, "password" => password, "grant_type" => "password"}) do
     case Accounts.get_user_by_email(username) do
       {:ok, %User{master_password_hash: ^password} = user} ->
-        claims = %{
-          premium: user.premium,
-          name: user.name,
-          email: user.email,
-          email_verified: user.email_verified
-        }
+        claims = Accounts.generate_user_claims(user)
 
         {:ok, access_token, _claims} =
           BitwardexWeb.Guardian.encode_and_sign(user, claims, token_type: "access")

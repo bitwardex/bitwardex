@@ -11,4 +11,8 @@ defmodule Bitwardex.Accounts do
   defdelegate update_user(user, arams), to: UserManager
   defdelegate delete_user(user), to: UserManager
   defdelegate change_user(user), to: UserManager
+
+  defdelegate generate_user_claims(user),
+    to: Bitwardex.Accounts.Services.GenerateUserClaims,
+    as: :call
 end

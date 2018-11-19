@@ -7,7 +7,6 @@ use Mix.Config
 config :bitwardex,
   ecto_repos: [Bitwardex.Repo]
 
-
 config :bitwardex, :generators,
   migration: true,
   binary_id: false,
