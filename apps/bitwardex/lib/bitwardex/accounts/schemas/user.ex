@@ -2,8 +2,11 @@ defmodule Bitwardex.Accounts.Schemas.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bitwardex.Core.Schemas.Folder
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+
   schema "users" do
     field :culture, :string, default: "en-US"
     field :email, :string
@@ -15,6 +18,8 @@ defmodule Bitwardex.Accounts.Schemas.User do
     field :master_password_hint, :string
     field :name, :string
     field :premium, :boolean, default: true
+
+    has_many :folders, Folder
 
     timestamps()
   end
