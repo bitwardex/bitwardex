@@ -18,9 +18,7 @@ defmodule BitwardexWeb.CiphersController do
       |> Map.put("user_id", user.id)
       |> Core.create_cipher()
 
-    conn
-    |> assign(:cipher, cipher)
-    |> render("show.json")
+    json(conn, cipher)
   end
 
   def update(conn, params = %{"id" => id}) do
@@ -32,9 +30,7 @@ defmodule BitwardexWeb.CiphersController do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, parsed_params)
 
-        conn
-        |> assign(:cipher, updated_cipher)
-        |> render("show.json")
+        json(conn, updated_cipher)
 
       _err ->
         resp(conn, 404, "")

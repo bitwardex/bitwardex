@@ -1,30 +1,30 @@
-defmodule Bitwardex.Core.Schemas.Field do
+defmodule Bitwardex.Core.Schemas.Ciphers.SecureNote do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Core.Schemas.Field
+  alias Bitwardex.Core.Schemas.Folder
 
   @primary_key false
 
   embedded_schema do
-    field :name, :string
-    field :value, :string
     field :type, :integer
   end
 
-  @required_field [:name, :value, :type]
+  @required_fields [:type]
   @optional_fields []
 
   @doc false
-  def changeset(field, attrs) do
-    field
-    |> cast(attrs, @required_field ++ @optional_fields)
-    |> validate_required(@required_field)
+  def changeset(folder, attrs) do
+    folder
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
   end
 
   defimpl Jason.Encoder, for: __MODULE__ do
     def encode(struct, _opts) do
       encoded_struct = %{
-        "Name" => struct.name,
-        "Value" => struct.value,
         "Type" => struct.type
       }
 

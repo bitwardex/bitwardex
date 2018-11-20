@@ -13,9 +13,7 @@ defmodule BitwardexWeb.FoldersController do
 
     {:ok, %Folder{} = folder} = Core.create_folder(%{name: name, user_id: user.id})
 
-    conn
-    |> assign(:folder, folder)
-    |> render("show.json")
+    json(conn, folder)
   end
 
   def update(conn, %{"id" => id, "name" => name}) do
@@ -25,9 +23,7 @@ defmodule BitwardexWeb.FoldersController do
       {:ok, %Folder{} = folder} ->
         {:ok, %Folder{} = updated_folder} = Core.update_folder(folder, %{name: name})
 
-        conn
-        |> assign(:folder, updated_folder)
-        |> render("show.json")
+        json(conn, updated_folder)
 
       _err ->
         resp(conn, 404, "")
