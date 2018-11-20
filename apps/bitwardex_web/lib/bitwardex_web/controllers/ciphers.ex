@@ -11,8 +11,10 @@ defmodule BitwardexWeb.CiphersController do
   def create(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
+    parsed_params = parse_params(params)
+
     {:ok, cipher} =
-      params
+      parsed_params
       |> Map.put("user_id", user.id)
       |> Core.create_cipher()
 
@@ -24,9 +26,11 @@ defmodule BitwardexWeb.CiphersController do
   def update(conn, params = %{"id" => id}) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
+    parsed_params = parse_params(params)
+
     case Core.get_cipher(user.id, id) do
       {:ok, %Cipher{} = cipher} ->
-        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, params)
+        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, parsed_params)
 
         conn
         |> assign(:cipher, updated_cipher)
@@ -48,5 +52,13 @@ defmodule BitwardexWeb.CiphersController do
       _err ->
         resp(conn, 404, "")
     end
+  end
+
+  defp parse_params(params) do
+    params
+    |> Enum.map(fn {key, value} ->
+      {Macro.underscore(key), value}
+    end)
+    |> Enum.into(%{})
   end
 end

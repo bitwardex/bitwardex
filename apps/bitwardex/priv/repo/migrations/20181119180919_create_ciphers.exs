@@ -9,6 +9,10 @@ defmodule Bitwardex.Repo.Migrations.CreateCiphers do
       add :favorite, :boolean
 
       add :login, :map, default: "{}"
+      add :card, :map, default: "{}"
+      add :identity, :map, default: "{}"
+      add :secure_note, :map, default: "{}"
+
       add :type, :integer, null: false
 
       add :fields, :map, default: "[]"

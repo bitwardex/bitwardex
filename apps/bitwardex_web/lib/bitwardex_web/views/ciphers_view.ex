@@ -1,7 +1,33 @@
 defmodule BitwardexWeb.CiphersView do
   use BitwardexWeb, :view
 
-  def render("show.json", %{cipher: cipher}) do
+  alias Bitwardex.Core.Schemas.Cipher
+
+  def render("show.json", %{cipher: %Cipher{type: 1} = cipher}) do
+    cipher
+    |> render_base()
+    |> Map.put("Login", render_nested(cipher.login))
+  end
+
+  def render("show.json", %{cipher: %Cipher{type: 2} = cipher}) do
+    cipher
+    |> render_base()
+    |> Map.put("SecureNote", render_nested(cipher.secure_note))
+  end
+
+  def render("show.json", %{cipher: %Cipher{type: 3} = cipher}) do
+    cipher
+    |> render_base()
+    |> Map.put("Card", render_nested(cipher.card))
+  end
+
+  def render("show.json", %{cipher: %Cipher{type: 4} = cipher}) do
+    cipher
+    |> render_base()
+    |> Map.put("Identity", render_nested(cipher.identity))
+  end
+
+  defp render_base(cipher) do
     %{
       "FolderId" => cipher.folder_id,
       "Favorite" => cipher.favorite,
@@ -9,7 +35,6 @@ defmodule BitwardexWeb.CiphersView do
       "Id" => cipher.id,
       "OrganizationId" => nil,
       "Type" => cipher.type,
-      "Login" => render_nested(cipher.login),
       "Name" => cipher.name,
       "Notes" => cipher.notes,
       "Fields" => render_fields(cipher.fields),

@@ -16,6 +16,10 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     field :type, :integer
 
     field :login, :map
+    field :card, :map
+    field :identity, :map
+    field :secure_note, :map
+
     belongs_to :user, User
     belongs_to :folder, Folder
 
@@ -25,7 +29,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   end
 
   @required_field [:name, :user_id]
-  @optional_fields [:notes, :favorite, :type, :login, :folder_id]
+  @optional_fields [:notes, :favorite, :type, :login, :card, :identity, :secure_note, :folder_id]
 
   @doc false
   def changeset(folder, attrs) do
