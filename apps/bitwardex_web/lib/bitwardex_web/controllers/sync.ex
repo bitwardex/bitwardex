@@ -11,7 +11,7 @@ defmodule BitwardexWeb.SyncController do
     user =
       conn
       |> BitwardexWeb.Guardian.Plug.current_resource()
-      |> Repo.preload(:folders)
+      |> Repo.preload([:folders, :ciphers])
 
     exclude_domains = Map.get(params, "excludeDomains") == "true"
 
