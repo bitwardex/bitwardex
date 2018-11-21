@@ -25,6 +25,7 @@ defmodule BitwardexWeb.Router do
       post "/accounts/kdf", AccountsController, :change_encryption
       post "/accounts/password", AccountsController, :change_master_password
       get "/accounts/revision-date", AccountsController, :revision_date
+      delete "/accounts", AccountsController, :delete
 
       resources "/folders", FoldersController, only: [:create, :update, :delete]
       resources "/ciphers", CiphersController, only: [:create, :update, :delete]

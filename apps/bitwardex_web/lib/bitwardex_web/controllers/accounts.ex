@@ -194,19 +194,12 @@ defmodule BitwardexWeb.AccountsController do
     end
   end
 
-  def change_encryption(conn, params) do
+  def delete(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
     master_password_hash = Map.get(params, "masterPasswordHash")
-    new_master_password_hash = Map.get(params, "newMasterPasswordHash")
-    new_key = Map.get(params, "key")
 
     if user.master_password_hash == master_password_hash do
-      params = %{
-        master_password_hash: new_master_password_hash,
-        key: new_key
-      }
-
-      {:ok, _updated_user} = Accounts.update_user(user, params)
+      {:ok, _user} = Accounts.delete_user(user)
 
       resp(conn, 200, "")
     else
