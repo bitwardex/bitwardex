@@ -8,6 +8,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
 
   alias Bitwardex.Core.Schemas.Ciphers.Card
   alias Bitwardex.Core.Schemas.Ciphers.Identity
+  alias Bitwardex.Core.Schemas.Ciphers.Login
   alias Bitwardex.Core.Schemas.Ciphers.SecureNote
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -19,21 +20,20 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     field :favorite, :boolean
     field :type, :integer
 
-    field :login, :map
-
     belongs_to :user, User
     belongs_to :folder, Folder
 
     embeds_many :fields, Field, on_replace: :delete
     embeds_one :card, Card, on_replace: :delete
     embeds_one :identity, Identity, on_replace: :delete
+    embeds_one :login, Login, on_replace: :delete
     embeds_one :secure_note, SecureNote, on_replace: :delete
 
     timestamps()
   end
 
   @required_field [:name, :user_id]
-  @optional_fields [:notes, :favorite, :type, :login, :folder_id]
+  @optional_fields [:notes, :favorite, :type, :folder_id]
 
   @doc false
   def changeset(folder, attrs) do
@@ -45,6 +45,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     |> cast_embed(:fields)
     |> cast_embed(:card)
     |> cast_embed(:identity)
+    |> cast_embed(:login)
     |> cast_embed(:secure_note)
   end
 
