@@ -52,8 +52,15 @@ defmodule BitwardexWeb.CiphersController do
 
   defp parse_params(params) do
     params
-    |> Enum.map(fn {key, value} ->
-      {Macro.underscore(key), value}
+    |> Enum.map(fn
+      {key, value} when is_list(value) or is_map(value) ->
+        {Macro.underscore(key), parse_params(value)}
+
+      {key, value} ->
+        {Macro.underscore(key), value}
+
+      value ->
+        value
     end)
     |> Enum.into(%{})
   end
