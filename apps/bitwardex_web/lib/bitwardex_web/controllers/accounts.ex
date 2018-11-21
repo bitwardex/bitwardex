@@ -80,50 +80,88 @@ defmodule BitwardexWeb.AccountsController do
     json(conn, updated_user)
   end
 
+  def request_email_change(conn, params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    master_password_hash = Map.get(params, "masterPasswordHash")
+    _new_email = Map.get(params, "newEmail")
+
+    if user.master_password_hash == master_password_hash do
+      resp(conn, 200, "")
+    else
+      conn
+      |> put_status(400)
+      |> json(%{
+        "ValidationErrors" => %{
+          "MasterPasswordHash" => [
+            "Invalid current password."
+          ]
+        },
+        "Object" => "error"
+      })
+    end
+  end
+
   def change_email(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
     master_password_hash = Map.get(params, "masterPasswordHash")
     new_email = Map.get(params, "newEmail")
+    new_master_password_hash = Map.get(params, "newMasterPasswordHash")
+    new_key = Map.get(params, "key")
 
-    case Accounts.change_user_email(user, master_password_hash, new_email) do
-      {:ok, _updated_user} ->
-        resp(conn, 200, "")
+    if user.master_password_hash == master_password_hash do
+      params = %{
+        email: new_email,
+        master_password_hash: new_master_password_hash,
+        key: new_key
+      }
 
-      {:error, :invalid_master_password} ->
-        conn
-        |> put_status(400)
-        |> json(%{
-          "ValidationErrors" => %{
-            "MasterPasswordHash" => [
-              "Invalid password."
-            ]
-          },
-          "Object" => "error"
-        })
+      {:ok, _updated_user} = Accounts.update_user(user, params)
 
-      {:error, :invalid_email} ->
-        conn
-        |> put_status(400)
-        |> json(%{
-          "ValidationErrors" => %{
-            "NewEmail" => [
-              "The email provided is not a valid e-mail address or it's already in use."
-            ]
-          },
-          "Object" => "error"
-        })
+      resp(conn, 200, "")
+    else
+      conn
+      |> put_status(400)
+      |> json(%{
+        "ValidationErrors" => %{
+          "MasterPasswordHash" => [
+            "Invalid current password."
+          ]
+        },
+        "Object" => "error"
+      })
+    end
+  end
 
-      _err ->
-        conn
-        |> put_status(400)
-        |> json(%{
-          "ValidationErrors" => %{
-            "NewEmail" => [
-              "Unexpected error happened"
-            ]
-          },
-          "Object" => "error"
-        })
+  def change_encryption(conn, params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    master_password_hash = Map.get(params, "masterPasswordHash")
+    new_master_password_hash = Map.get(params, "newMasterPasswordHash")
+    new_key = Map.get(params, "key")
+    new_kdf = Map.get(params, "kdf")
+    new_kdf_iterations = Map.get(params, "kdfIterations")
+
+    if user.master_password_hash == master_password_hash do
+      params = %{
+        master_password_hash: new_master_password_hash,
+        key: new_key,
+        kdf: new_kdf,
+        kdf_iterations: new_kdf_iterations
+      }
+
+      {:ok, _updated_user} = Accounts.update_user(user, params)
+
+      resp(conn, 200, "")
+    else
+      conn
+      |> put_status(400)
+      |> json(%{
+        "ValidationErrors" => %{
+          "MasterPasswordHash" => [
+            "Invalid current password."
+          ]
+        },
+        "Object" => "error"
+      })
     end
   end
 
@@ -133,38 +171,55 @@ defmodule BitwardexWeb.AccountsController do
     new_master_password_hash = Map.get(params, "newMasterPasswordHash")
     new_key = Map.get(params, "key")
 
-    case Accounts.change_user_master_password(
-           user,
-           master_password_hash,
-           new_master_password_hash,
-           new_key
-         ) do
-      {:ok, _updated_user} ->
-        resp(conn, 200, "")
+    if user.master_password_hash == master_password_hash do
+      params = %{
+        master_password_hash: new_master_password_hash,
+        key: new_key
+      }
 
-      {:error, :invalid_master_password} ->
-        conn
-        |> put_status(400)
-        |> json(%{
-          "ValidationErrors" => %{
-            "MasterPasswordHash" => [
-              "Invalid password."
-            ]
-          },
-          "Object" => "error"
-        })
+      {:ok, _updated_user} = Accounts.update_user(user, params)
 
-      _err ->
-        conn
-        |> put_status(400)
-        |> json(%{
-          "ValidationErrors" => %{
-            "MasterPasswordHash" => [
-              "Unexpected error happened"
-            ]
-          },
-          "Object" => "error"
-        })
+      resp(conn, 200, "")
+    else
+      conn
+      |> put_status(400)
+      |> json(%{
+        "ValidationErrors" => %{
+          "MasterPasswordHash" => [
+            "Invalid current password."
+          ]
+        },
+        "Object" => "error"
+      })
+    end
+  end
+
+  def change_encryption(conn, params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    master_password_hash = Map.get(params, "masterPasswordHash")
+    new_master_password_hash = Map.get(params, "newMasterPasswordHash")
+    new_key = Map.get(params, "key")
+
+    if user.master_password_hash == master_password_hash do
+      params = %{
+        master_password_hash: new_master_password_hash,
+        key: new_key
+      }
+
+      {:ok, _updated_user} = Accounts.update_user(user, params)
+
+      resp(conn, 200, "")
+    else
+      conn
+      |> put_status(400)
+      |> json(%{
+        "ValidationErrors" => %{
+          "MasterPasswordHash" => [
+            "Invalid current password."
+          ]
+        },
+        "Object" => "error"
+      })
     end
   end
 

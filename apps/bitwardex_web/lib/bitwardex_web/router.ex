@@ -20,7 +20,9 @@ defmodule BitwardexWeb.Router do
 
       get "/accounts/profile", AccountsController, :profile
       put "/accounts/profile", AccountsController, :update_profile
-      post "/accounts/email-token", AccountsController, :change_email
+      post "/accounts/email-token", AccountsController, :request_email_change
+      post "/accounts/email", AccountsController, :change_email
+      post "/accounts/kdf", AccountsController, :change_encryption
       post "/accounts/password", AccountsController, :change_master_password
       get "/accounts/revision-date", AccountsController, :revision_date
 
