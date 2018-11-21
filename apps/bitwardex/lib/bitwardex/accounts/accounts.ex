@@ -15,4 +15,8 @@ defmodule Bitwardex.Accounts do
   defdelegate generate_user_claims(user),
     to: Bitwardex.Accounts.Services.GenerateUserClaims,
     as: :call
+
+  defdelegate change_user_email(user, master_password_hash, new_email),
+    to: Bitwardex.Accounts.Services.ChangeUserEmail,
+    as: :call
 end

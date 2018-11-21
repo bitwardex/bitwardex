@@ -18,6 +18,10 @@ defmodule BitwardexWeb.Router do
 
       get "/sync", SyncController, :sync
 
+      get "/accounts/profile", AccountsController, :profile
+      put "/accounts/profile", AccountsController, :update_profile
+      post "/accounts/email-token", AccountsController, :change_email
+
       resources "/folders", FoldersController, only: [:create, :update, :delete]
       resources "/ciphers", CiphersController, only: [:create, :update, :delete]
     end

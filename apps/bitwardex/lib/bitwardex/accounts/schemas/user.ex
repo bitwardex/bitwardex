@@ -39,4 +39,26 @@ defmodule Bitwardex.Accounts.Schemas.User do
     |> validate_format(:email, @email_regex)
     |> unique_constraint(:email)
   end
+
+  defimpl Jason.Encoder, for: __MODULE__ do
+    def encode(struct, _opts) do
+      encoded_struct = %{
+        "Id" => struct.id,
+        "Name" => struct.name,
+        "Email" => struct.email,
+        "EmailVerified" => struct.email_verified,
+        "Premium" => struct.premium,
+        "MasterPasswordHint" => struct.master_password_hint,
+        "Culture" => struct.culture,
+        "TwoFactorEnabled" => false,
+        "Key" => struct.key,
+        "PrivateKey" => nil,
+        "SecurityStamp" => struct.id,
+        "Organizations" => [],
+        "Object" => "profile"
+      }
+
+      Jason.encode!(encoded_struct)
+    end
+  end
 end
