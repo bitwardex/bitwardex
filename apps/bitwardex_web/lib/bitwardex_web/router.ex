@@ -21,9 +21,12 @@ defmodule BitwardexWeb.Router do
       get "/accounts/profile", AccountsController, :profile
       put "/accounts/profile", AccountsController, :update_profile
       post "/accounts/email-token", AccountsController, :change_email
+      post "/accounts/password", AccountsController, :change_master_password
+      get "/accounts/revision-date", AccountsController, :revision_date
 
       resources "/folders", FoldersController, only: [:create, :update, :delete]
       resources "/ciphers", CiphersController, only: [:create, :update, :delete]
+      post "/ciphers/purge", CiphersController, :purge
     end
   end
 

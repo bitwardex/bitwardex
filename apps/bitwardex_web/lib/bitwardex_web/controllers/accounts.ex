@@ -127,6 +127,58 @@ defmodule BitwardexWeb.AccountsController do
     end
   end
 
+  def change_master_password(conn, params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    master_password_hash = Map.get(params, "masterPasswordHash")
+    new_master_password_hash = Map.get(params, "newMasterPasswordHash")
+    new_key = Map.get(params, "key")
+
+    case Accounts.change_user_master_password(
+           user,
+           master_password_hash,
+           new_master_password_hash,
+           new_key
+         ) do
+      {:ok, _updated_user} ->
+        resp(conn, 200, "")
+
+      {:error, :invalid_master_password} ->
+        conn
+        |> put_status(400)
+        |> json(%{
+          "ValidationErrors" => %{
+            "MasterPasswordHash" => [
+              "Invalid password."
+            ]
+          },
+          "Object" => "error"
+        })
+
+      _err ->
+        conn
+        |> put_status(400)
+        |> json(%{
+          "ValidationErrors" => %{
+            "MasterPasswordHash" => [
+              "Unexpected error happened"
+            ]
+          },
+          "Object" => "error"
+        })
+    end
+  end
+
+  def revision_date(conn, _params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
+    updated_at =
+      user.updated_at
+      |> DateTime.to_unix(:millisecond)
+      |> Integer.to_string()
+
+    json(conn, updated_at)
+  end
+
   defp generate_user_session(conn, user) do
     claims = Accounts.generate_user_claims(user)
 

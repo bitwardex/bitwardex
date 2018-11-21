@@ -19,4 +19,13 @@ defmodule Bitwardex.Accounts do
   defdelegate change_user_email(user, master_password_hash, new_email),
     to: Bitwardex.Accounts.Services.ChangeUserEmail,
     as: :call
+
+  defdelegate change_user_master_password(
+                user,
+                master_password_hash,
+                new_master_password_hash,
+                new_key
+              ),
+              to: Bitwardex.Accounts.Services.ChangeUserMasterPassword,
+              as: :call
 end

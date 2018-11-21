@@ -23,7 +23,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
     has_many :ciphers, Cipher
     has_many :folders, Folder
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @required_fields [:email, :master_password_hash, :key, :kdf, :kdf_iterations]
