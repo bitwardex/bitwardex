@@ -2,10 +2,6 @@ defmodule Bitwardex.Core.Schemas.Ciphers.SecureNote do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Bitwardex.Accounts.Schemas.User
-  alias Bitwardex.Core.Schemas.Field
-  alias Bitwardex.Core.Schemas.Folder
-
   @primary_key false
 
   embedded_schema do

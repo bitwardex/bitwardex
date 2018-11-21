@@ -1,9 +1,6 @@
 defmodule BitwardexWeb.SyncView do
   use BitwardexWeb, :view
 
-  alias BitwardexWeb.CiphersView
-  alias BitwardexWeb.FoldersView
-
   def render("sync.json", %{current_user: user, exclude_domains: true}) do
     %{
       "Profile" => render_profile(user),

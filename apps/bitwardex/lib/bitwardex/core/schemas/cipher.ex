@@ -5,6 +5,8 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   alias Bitwardex.Accounts.Schemas.User
   alias Bitwardex.Core.Schemas.Field
   alias Bitwardex.Core.Schemas.Folder
+
+  alias Bitwardex.Core.Schemas.Ciphers.Identity
   alias Bitwardex.Core.Schemas.Ciphers.SecureNote
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -18,13 +20,13 @@ defmodule Bitwardex.Core.Schemas.Cipher do
 
     field :login, :map
     field :card, :map
-    field :identity, :map
 
     belongs_to :user, User
     belongs_to :folder, Folder
 
     embeds_many :fields, Field, on_replace: :delete
     embeds_one :secure_note, SecureNote
+    embeds_one :identity, Identity
 
     timestamps()
   end
