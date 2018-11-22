@@ -23,7 +23,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
     has_many :ciphers, Cipher
     has_many :folders, Folder
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @required_fields [:email, :master_password_hash, :key, :kdf, :kdf_iterations]
@@ -38,5 +38,27 @@ defmodule Bitwardex.Accounts.Schemas.User do
     |> validate_required(@required_fields)
     |> validate_format(:email, @email_regex)
     |> unique_constraint(:email)
+  end
+
+  defimpl Jason.Encoder, for: __MODULE__ do
+    def encode(struct, _opts) do
+      encoded_struct = %{
+        "Id" => struct.id,
+        "Name" => struct.name,
+        "Email" => struct.email,
+        "EmailVerified" => struct.email_verified,
+        "Premium" => struct.premium,
+        "MasterPasswordHint" => struct.master_password_hint,
+        "Culture" => struct.culture,
+        "TwoFactorEnabled" => false,
+        "Key" => struct.key,
+        "PrivateKey" => nil,
+        "SecurityStamp" => struct.id,
+        "Organizations" => [],
+        "Object" => "profile"
+      }
+
+      Jason.encode!(encoded_struct)
+    end
   end
 end
