@@ -2,6 +2,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Core.Schemas.Folder
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -19,6 +20,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
     field :name, :string
     field :premium, :boolean, default: true
 
+    has_many :ciphers, Cipher
     has_many :folders, Folder
 
     timestamps()

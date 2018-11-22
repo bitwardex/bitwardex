@@ -19,6 +19,7 @@ defmodule BitwardexWeb.Router do
       get "/sync", SyncController, :sync
 
       resources "/folders", FoldersController, only: [:create, :update, :delete]
+      resources "/ciphers", CiphersController, only: [:create, :update, :delete]
     end
   end
 

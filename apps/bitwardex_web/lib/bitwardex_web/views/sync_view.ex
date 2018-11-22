@@ -1,13 +1,11 @@
 defmodule BitwardexWeb.SyncView do
   use BitwardexWeb, :view
 
-  alias BitwardexWeb.FoldersView
-
   def render("sync.json", %{current_user: user, exclude_domains: true}) do
     %{
       "Profile" => render_profile(user),
-      "Folders" => render_folders(user.folders),
-      "Ciphers" => [],
+      "Folders" => user.folders,
+      "Ciphers" => user.ciphers,
       "Object" => "sync"
     }
   end
@@ -15,8 +13,8 @@ defmodule BitwardexWeb.SyncView do
   def render("sync.json", %{current_user: user}) do
     %{
       "Profile" => render_profile(user),
-      "Folders" => [],
-      "Ciphers" => [],
+      "Folders" => user.folders,
+      "Ciphers" => user.ciphers,
       "Domains" => [],
       "Object" => "sync"
     }
@@ -38,11 +36,5 @@ defmodule BitwardexWeb.SyncView do
       "Organizations" => [],
       "Object" => "profile"
     }
-  end
-
-  def render_folders(folders) do
-    Enum.map(folders, fn folder ->
-      render(FoldersView, "show.json", folder: folder)
-    end)
   end
 end

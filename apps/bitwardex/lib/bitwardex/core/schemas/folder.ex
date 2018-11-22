@@ -29,4 +29,17 @@ defmodule Bitwardex.Core.Schemas.Folder do
     |> validate_required(@required_field)
     |> assoc_constraint(:user)
   end
+
+  defimpl Jason.Encoder, for: __MODULE__ do
+    def encode(struct, _opts) do
+      encoded_struct = %{
+        "Id" => struct.id,
+        "Name" => struct.name,
+        "RevisionDate" => NaiveDateTime.to_iso8601(struct.updated_at),
+        "Object" => "folder"
+      }
+
+      Jason.encode!(encoded_struct)
+    end
+  end
 end
