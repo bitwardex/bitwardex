@@ -34,13 +34,15 @@ defmodule BitwardexWeb.Router do
 
       post "/organizations", OrganizationsController, :create
 
-      # Collections
-      get "/organizations/:organization_id/collections", CollectionsController, :index
-      get "/organizations/:organization_id/collections/:id/details", CollectionsController, :show
-      post "/organizations/:organization_id/collections", CollectionsController, :create
-      put "/organizations/:organization_id/collections/:id", CollectionsController, :update
-      post "/organizations/:organization_id/collections/:id", CollectionsController, :update
-      delete "/organizations/:organization_id/collections/:id", CollectionsController, :delete
+      scope "/organizations/:organization_id", Organizations do
+        # Collections
+        get "/collections", CollectionsController, :index
+        get "/collections/:id/details", CollectionsController, :show
+        post "/collections", CollectionsController, :create
+        put "/collections/:id", CollectionsController, :update
+        post "/collections/:id", CollectionsController, :update
+        delete "/collections/:id", CollectionsController, :delete
+      end
 
       post "/organizations/:organization_id/collections/:id/delete",
            CollectionsController,

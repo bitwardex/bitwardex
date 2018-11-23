@@ -1,4 +1,4 @@
-defmodule BitwardexWeb.CollectionsController do
+defmodule BitwardexWeb.Organizations.CollectionsController do
   @moduledoc """
   Controller to handle accounts-related operations
   """

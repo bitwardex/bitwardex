@@ -3,6 +3,8 @@ defmodule Bitwardex.Core.Schemas.Collection do
   import Ecto.Changeset
 
   alias Bitwardex.Accounts.Schemas.Organization
+  alias Bitwardex.Accounts.Schemas.UserCollection
+  alias Bitwardex.Core.Schemas.Cipher
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -11,6 +13,8 @@ defmodule Bitwardex.Core.Schemas.Collection do
     field :name, :string
 
     belongs_to :organization, Organization
+    has_many :collection_users, UserCollection
+    many_to_many :ciphers, Cipher, join_through: "ciphers_collections"
 
     timestamps()
   end
