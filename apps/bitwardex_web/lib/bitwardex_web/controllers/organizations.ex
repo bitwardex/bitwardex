@@ -5,23 +5,12 @@ defmodule BitwardexWeb.OrganizationsController do
 
   use BitwardexWeb, :controller
 
-  alias Bitwardex.Core.Accounts
+  alias Bitwardex.Accounts
 
   def create(conn, params) do
+    IO.inspect(params)
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
-    %{
-      "key" => user_key,
-      "collectionName" => collection_name,
-      "name" => name,
-      "billingEmail" => billing_email
-    } = params
-
-    Accounts.create_organization(
-      %{name: name, billing_email: billing_email},
-      collection_name,
-      user,
-      user_key
-    )
+    Accounts.create_organization(params, user)
   end
 end

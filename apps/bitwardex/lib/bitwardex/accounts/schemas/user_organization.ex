@@ -25,7 +25,9 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
     :access_all,
     :key,
     :user_id,
-    :organization_id
+    :organization_id,
+    :status,
+    :type
   ]
   @optional_fields []
 

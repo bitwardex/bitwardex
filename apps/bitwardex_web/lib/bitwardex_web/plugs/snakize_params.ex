@@ -9,6 +9,7 @@ defmodule BitwardexWeb.SnakizeParamsPlug do
 
   @impl true
   def call(%Plug.Conn{params: params} = conn, _opts) do
+    IO.inspect(params)
     %{conn | params: snakize_params(params)}
   end
 

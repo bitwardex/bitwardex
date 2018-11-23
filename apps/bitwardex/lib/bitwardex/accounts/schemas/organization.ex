@@ -6,8 +6,8 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
   @foreign_key_type :binary_id
 
   schema "organizations" do
-    field :name, :string
     field :billing_email, :string
+    field :name, :string
 
     field :business_name, :string
     field :business_address1, :string
@@ -32,8 +32,8 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
   @email_regex ~r/^[A-Za-z0-9._%+-\\']+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/
 
   @doc false
-  def changeset(user, attrs) do
-    user
+  def changeset(organization, attrs) do
+    organization
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> validate_format(:billing_email, @email_regex)
