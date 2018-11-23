@@ -5,7 +5,7 @@ defmodule BitwardexWeb.OrganizationsController do
 
   use BitwardexWeb, :controller
 
-  alias Bitwardex.Core.Accounts
+  alias Bitwardex.Accounts
 
   def create(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)

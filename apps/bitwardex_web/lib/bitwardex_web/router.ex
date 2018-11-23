@@ -33,6 +33,18 @@ defmodule BitwardexWeb.Router do
       post "/ciphers/purge", CiphersController, :purge
 
       post "/organizations", OrganizationsController, :create
+
+      # Collections
+      get "/organizations/:organization_id/collections", CollectionsController, :index
+      get "/organizations/:organization_id/collections/:id/details", CollectionsController, :show
+      post "/organizations/:organization_id/collections", CollectionsController, :create
+      put "/organizations/:organization_id/collections/:id", CollectionsController, :update
+      post "/organizations/:organization_id/collections/:id", CollectionsController, :update
+      delete "/organizations/:organization_id/collections/:id", CollectionsController, :delete
+
+      post "/organizations/:organization_id/collections/:id/delete",
+           CollectionsController,
+           :delete
     end
   end
 
