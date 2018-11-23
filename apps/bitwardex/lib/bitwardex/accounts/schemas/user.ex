@@ -2,6 +2,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bitwardex.Accounts.Schemas.Keys
   alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Core.Schemas.Folder
 
@@ -20,6 +21,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
     field :name, :string
     field :premium, :boolean, default: true
 
+    embeds_one :keys, Keys
     has_many :ciphers, Cipher
     has_many :folders, Folder
 
@@ -35,6 +37,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, @required_fields ++ @optional_fields)
+    |> cast_embed(:keys, required: true)
     |> validate_required(@required_fields)
     |> validate_format(:email, @email_regex)
     |> unique_constraint(:email)
@@ -52,7 +55,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
         "Culture" => struct.culture,
         "TwoFactorEnabled" => false,
         "Key" => struct.key,
-        "PrivateKey" => nil,
+        "PrivateKey" => struct.keys.encrypted_private_key,
         "SecurityStamp" => struct.id,
         "Organizations" => [],
         "Object" => "profile"

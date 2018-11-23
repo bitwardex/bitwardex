@@ -254,7 +254,8 @@ defmodule BitwardexWeb.AccountsController do
       "expires_in" => ttl,
       "token_type" => "Bearer",
       "refresh_token" => refresh_token,
-      "Key" => user.key
+      "Key" => user.key,
+      "PrivateKey" => user.keys.encrypted_private_key
     })
   end
 
@@ -276,14 +277,17 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   defp parse_user_params(params) do
-    %{
-      name: Map.get(params, "name"),
-      email: Map.get(params, "email"),
-      master_password_hash: Map.get(params, "masterPasswordHash"),
-      master_password_hint: Map.get(params, "masterPasswordHint"),
-      key: Map.get(params, "key"),
-      kdf: Map.get(params, "kdf"),
-      kdf_iterations: Map.get(params, "kdfIterations")
-    }
+    params
+    |> Enum.map(fn
+      {key, value} when is_list(value) or is_map(value) ->
+        {Macro.underscore(key), parse_user_params(value)}
+
+      {key, value} ->
+        {Macro.underscore(key), value}
+
+      value ->
+        value
+    end)
+    |> Enum.into(%{})
   end
 end
