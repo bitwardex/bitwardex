@@ -3,8 +3,10 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   import Ecto.Changeset
 
   alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Core.Schemas.Field
   alias Bitwardex.Core.Schemas.Folder
+  alias Bitwardex.Core.Schemas.Collection
 
   alias Bitwardex.Core.Schemas.Ciphers.Card
   alias Bitwardex.Core.Schemas.Ciphers.Identity
@@ -21,7 +23,9 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     field :type, :integer
 
     belongs_to :user, User
+    belongs_to :organization, Organization
     belongs_to :folder, Folder
+    many_to_many :collections, Collection, join_through: "ciphers_collections"
 
     embeds_many :fields, Field, on_replace: :delete
     embeds_one :card, Card, on_replace: :delete
@@ -32,8 +36,8 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     timestamps()
   end
 
-  @required_field [:name, :user_id]
-  @optional_fields [:notes, :favorite, :type, :folder_id]
+  @required_field [:name]
+  @optional_fields [:notes, :favorite, :type, :folder_id, :user_id, :organization_id]
 
   @doc false
   def changeset(folder, attrs) do
@@ -41,6 +45,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     |> cast(attrs, @required_field ++ @optional_fields)
     |> validate_required(@required_field)
     |> assoc_constraint(:user)
+    |> assoc_constraint(:organization)
     |> assoc_constraint(:folder)
     |> cast_embed(:fields)
     |> cast_embed(:card)
@@ -93,7 +98,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
         "Favorite" => struct.favorite,
         "Edit" => true,
         "Id" => struct.id,
-        "OrganizationId" => nil,
+        "OrganizationId" => struct.organization_id,
         "Type" => struct.type,
         "Notes" => struct.notes,
         "Fields" => struct.fields,

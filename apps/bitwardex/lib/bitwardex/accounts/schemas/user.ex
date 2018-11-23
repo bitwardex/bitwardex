@@ -3,8 +3,10 @@ defmodule Bitwardex.Accounts.Schemas.User do
   import Ecto.Changeset
 
   alias Bitwardex.Accounts.Schemas.Keys
+  alias Bitwardex.Accounts.Schemas.UserOrganization
   alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Core.Schemas.Folder
+  alias Bitwardex.Core.Schemas.UserCollection
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -24,6 +26,9 @@ defmodule Bitwardex.Accounts.Schemas.User do
     embeds_one :keys, Keys
     has_many :ciphers, Cipher
     has_many :folders, Folder
+
+    has_many :user_organizations, UserOrganization
+    has_many :user_collections, UserCollection
 
     timestamps(type: :utc_datetime)
   end
