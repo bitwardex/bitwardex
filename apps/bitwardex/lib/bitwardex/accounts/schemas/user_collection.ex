@@ -6,7 +6,7 @@ defmodule Bitwardex.Accounts.Schemas.UserCollection do
   @foreign_key_type :binary_id
 
   alias Bitwardex.Accounts.Schemas.User
-  alias Bitwardex.Accounts.Schemas.Collection
+  alias Bitwardex.Core.Schemas.Collection
 
   schema "users_collections" do
     field :read_only, :boolean, default: false

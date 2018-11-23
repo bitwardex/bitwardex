@@ -4,9 +4,9 @@ defmodule Bitwardex.Accounts.Schemas.User do
 
   alias Bitwardex.Accounts.Schemas.Keys
   alias Bitwardex.Accounts.Schemas.UserOrganization
+  alias Bitwardex.Accounts.Schemas.UserCollection
   alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Core.Schemas.Folder
-  alias Bitwardex.Core.Schemas.UserCollection
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
