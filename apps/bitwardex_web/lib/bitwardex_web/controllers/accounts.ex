@@ -64,6 +64,34 @@ defmodule BitwardexWeb.AccountsController do
     json(conn, user)
   end
 
+  def get_public_key(conn, %{"id" => user_id}) do
+    case Accounts.get_user(user_id) do
+      {:ok, user} ->
+        json(conn, %{
+          "UserId" => user.id,
+          "PublicKey" => user.keys.public_key,
+          "Object" => "userKey"
+        })
+
+      _ ->
+        json(
+          conn,
+          %{
+            "error" => "unknown_error",
+            "error_description" => "unknown_error",
+            "ErrorModel" => %{
+              "Message" => "User not found",
+              "ValidationErrors" => nil,
+              "ExceptionMessage" => nil,
+              "ExceptionStackTrace" => nil,
+              "InnerExceptionMessage" => nil,
+              "Object" => "error"
+            }
+          }
+        )
+    end
+  end
+
   def update_profile(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
@@ -74,6 +102,23 @@ defmodule BitwardexWeb.AccountsController do
     }
 
     {:ok, updated_user} = Accounts.update_user(user, params)
+
+    json(conn, updated_user)
+  end
+
+  def update_keys(conn, %{
+        "encryptedPrivateKey" => encrypted_private_key,
+        "publicKey" => public_key
+      }) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
+    {:ok, updated_user} =
+      Accounts.update_user(user, %{
+        "keys" => %{
+          encrypted_private_key: encrypted_private_key,
+          public_key: public_key
+        }
+      })
 
     json(conn, updated_user)
   end

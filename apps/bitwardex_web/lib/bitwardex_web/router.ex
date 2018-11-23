@@ -20,6 +20,8 @@ defmodule BitwardexWeb.Router do
       get "/sync", SyncController, :sync
 
       get "/accounts/profile", AccountsController, :profile
+      get "/users/:id/public-key", AccountsController, :get_public_key
+      get "/accounts/keys", AccountsController, :update_keys
       put "/accounts/profile", AccountsController, :update_profile
       post "/accounts/email-token", AccountsController, :request_email_change
       post "/accounts/email", AccountsController, :change_email
@@ -42,6 +44,11 @@ defmodule BitwardexWeb.Router do
         put "/collections/:id", CollectionsController, :update
         post "/collections/:id", CollectionsController, :update
         delete "/collections/:id", CollectionsController, :delete
+
+        # Collection users
+        get "/collections/:id/users", CollectionsController, :get_users
+        post "/collections/:id/users", CollectionsController, :update_users
+        put "/collections/:id/users", CollectionsController, :update_users
       end
 
       post "/organizations/:organization_id/collections/:id/delete",
