@@ -8,6 +8,8 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
   alias Bitwardex.Accounts
   alias Bitwardex.Core
 
+  alias Bitwardex.Repo
+
   def index(conn, %{"organization_id" => organization_id}) do
     collections = Core.list_collections(organization_id)
 
@@ -44,5 +46,32 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
 
     {:ok, _updated_collection} = Core.delete_collection(collection)
     resp(conn, 200, "")
+  end
+
+  def get_users(conn, %{"organization_id" => organization_id, "collection_id" => collection_id}) do
+    {:ok, collection} = Core.get_collection_by_organization(organization_id, collection_id)
+
+    users =
+      collection
+      |> Repo.preload(collection_users: [:user])
+      |> Enum.reduce([], fn collection, acc ->
+        Enum.reduce(collection.collection_users, acc, fn cu, acc2 ->
+          [cu | acc2]
+        end)
+      end)
+      |> Enum.uniq()
+
+    json(conn, %{
+      "Data" => users,
+      "Object" => "list",
+      "ContinuationToken" => nil
+    })
+  end
+
+  def update_users(
+        conn,
+        %{"organization_id" => organization_id, "collection" => collection_id} = params
+      ) do
+    {:ok, collection} = Core.get_collection_by_organization(organization_id, collection_id)
   end
 end
