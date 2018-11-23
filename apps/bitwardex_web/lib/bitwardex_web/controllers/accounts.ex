@@ -9,9 +9,7 @@ defmodule BitwardexWeb.AccountsController do
   alias Bitwardex.Accounts.Schemas.User
 
   def register(conn, params) do
-    user_params = parse_user_params(params)
-
-    case Accounts.create_user(user_params) do
+    case Accounts.create_user(params) do
       {:ok, _user} ->
         resp(conn, 200, "")
 
@@ -274,20 +272,5 @@ defmodule BitwardexWeb.AccountsController do
         "Object" => "error"
       }
     })
-  end
-
-  defp parse_user_params(params) do
-    params
-    |> Enum.map(fn
-      {key, value} when is_list(value) or is_map(value) ->
-        {Macro.underscore(key), parse_user_params(value)}
-
-      {key, value} ->
-        {Macro.underscore(key), value}
-
-      value ->
-        value
-    end)
-    |> Enum.into(%{})
   end
 end

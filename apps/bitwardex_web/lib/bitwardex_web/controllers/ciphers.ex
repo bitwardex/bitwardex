@@ -12,10 +12,8 @@ defmodule BitwardexWeb.CiphersController do
   def create(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
-    parsed_params = parse_params(params)
-
     {:ok, cipher} =
-      parsed_params
+      params
       |> Map.put("user_id", user.id)
       |> Core.create_cipher()
 
@@ -25,11 +23,9 @@ defmodule BitwardexWeb.CiphersController do
   def update(conn, params = %{"id" => id}) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
-    parsed_params = parse_params(params)
-
     case Core.get_cipher(user.id, id) do
       {:ok, %Cipher{} = cipher} ->
-        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, parsed_params)
+        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, params)
 
         json(conn, updated_cipher)
 
@@ -73,20 +69,5 @@ defmodule BitwardexWeb.CiphersController do
         "Object" => "error"
       })
     end
-  end
-
-  defp parse_params(params) do
-    params
-    |> Enum.map(fn
-      {key, value} when is_list(value) or is_map(value) ->
-        {Macro.underscore(key), parse_params(value)}
-
-      {key, value} ->
-        {Macro.underscore(key), value}
-
-      value ->
-        value
-    end)
-    |> Enum.into(%{})
   end
 end

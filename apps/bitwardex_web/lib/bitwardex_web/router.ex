@@ -5,6 +5,7 @@ defmodule BitwardexWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug BitwardexWeb.SnakizeParamsPlug
   end
 
   scope "/api", BitwardexWeb do
