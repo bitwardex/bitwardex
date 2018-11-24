@@ -42,7 +42,7 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
   defimpl Jason.Encoder, for: __MODULE__ do
     def encode(struct, _opts) do
       encoded_struct = %{
-        "Id" => struct.uuid,
+        "Id" => struct.id,
         "Name" => struct.name,
         "BusinessName" => struct.business_name,
         "BusinessAddress1" => struct.business_address1,
