@@ -21,4 +21,8 @@ defmodule Bitwardex.Accounts do
   defdelegate create_organization(params), to: OrganizationManager
   defdelegate update_organization(organization, params), to: OrganizationManager
   defdelegate delete_organization(organization), to: OrganizationManager
+
+  defdelegate create_organization(params, user),
+    to: Bitwardex.Accounts.Services.CreateOrganization,
+    as: :call
 end

@@ -28,6 +28,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
     has_many :folders, Folder
 
     has_many :user_organizations, UserOrganization
+    has_many :organizations, through: [:user_organizations, :organization]
     has_many :user_collections, UserCollection
 
     timestamps(type: :utc_datetime)

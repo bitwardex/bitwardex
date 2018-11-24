@@ -10,18 +10,9 @@ defmodule BitwardexWeb.OrganizationsController do
   def create(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
-    %{
-      "key" => user_key,
-      "collectionName" => collection_name,
-      "name" => name,
-      "billingEmail" => billing_email
-    } = params
-
-    Accounts.create_organization(
-      %{name: name, billing_email: billing_email},
-      collection_name,
-      user,
-      user_key
-    )
+    case Accounts.create_organization(params, user) do
+      {:ok, %{organization: organization}} -> json(conn, organization)
+      {:error, _step, _changeset, _changes_so_far} -> nil
+    end
   end
 end
