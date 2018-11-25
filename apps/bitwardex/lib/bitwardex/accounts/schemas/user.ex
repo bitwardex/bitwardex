@@ -3,8 +3,8 @@ defmodule Bitwardex.Accounts.Schemas.User do
   import Ecto.Changeset
 
   alias Bitwardex.Accounts.Schemas.Keys
-  alias Bitwardex.Accounts.Schemas.UserOrganization
   alias Bitwardex.Accounts.Schemas.UserCollection
+  alias Bitwardex.Accounts.Schemas.UserOrganization
   alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Core.Schemas.Folder
 

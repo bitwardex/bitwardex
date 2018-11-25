@@ -2,11 +2,11 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Bitwardex.Accounts.Schemas.User
   alias Bitwardex.Accounts.Schemas.Organization
+  alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Core.Schemas.Collection
   alias Bitwardex.Core.Schemas.Field
   alias Bitwardex.Core.Schemas.Folder
-  alias Bitwardex.Core.Schemas.Collection
 
   alias Bitwardex.Core.Schemas.Ciphers.Card
   alias Bitwardex.Core.Schemas.Ciphers.Identity

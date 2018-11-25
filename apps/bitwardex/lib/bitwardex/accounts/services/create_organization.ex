@@ -2,10 +2,11 @@ defmodule Bitwardex.Accounts.Services.CreateOrganization do
   @moduledoc false
 
   alias Bitwardex.Accounts.Schemas.Organization
-  alias Bitwardex.Core.Managers.Collection
-  alias Ecto.Multi
-  alias Bitwardex.Repo
   alias Bitwardex.Accounts.Schemas.UserOrganization
+  alias Bitwardex.Core.Managers.Collection
+  alias Bitwardex.Repo
+
+  alias Ecto.Multi
 
   def call(params, user) do
     Multi.new()

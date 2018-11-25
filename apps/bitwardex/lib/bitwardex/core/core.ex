@@ -3,8 +3,8 @@ defmodule Bitwardex.Core do
   The Core context.
   """
 
-  alias Bitwardex.Core.Managers.Collection, as: CollectionManager
   alias Bitwardex.Core.Managers.Cipher, as: CipherManager
+  alias Bitwardex.Core.Managers.Collection, as: CollectionManager
   alias Bitwardex.Core.Managers.Folder, as: FolderManager
 
   alias Bitwardex.Core.Services.UpdateCollectionUsers

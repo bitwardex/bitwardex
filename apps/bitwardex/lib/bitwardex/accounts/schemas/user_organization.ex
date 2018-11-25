@@ -5,8 +5,8 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
-  alias Bitwardex.Accounts.Schemas.User
   alias Bitwardex.Accounts.Schemas.Organization
+  alias Bitwardex.Accounts.Schemas.User
 
   schema "users_organizations" do
     field :access_all, :boolean
