@@ -2,6 +2,8 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bitwardex.Accounts.Schemas.UserOrganization
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
@@ -15,6 +17,9 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
     field :business_address3, :string
     field :business_country, :string
     field :business_tax_number, :string
+
+    has_many :organization_users, UserOrganization
+    has_many :users, through: [:organization_users, :user]
 
     timestamps(type: :utc_datetime)
   end

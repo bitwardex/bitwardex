@@ -20,7 +20,7 @@ defmodule BitwardexWeb.CiphersController do
     json(conn, cipher)
   end
 
-  def update(conn, params = %{"id" => id}) do
+  def update(conn, %{"id" => id} = params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
     case Core.get_cipher(user.id, id) do

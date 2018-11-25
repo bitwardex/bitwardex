@@ -38,6 +38,9 @@ defmodule BitwardexWeb.Router do
       get "/ciphers/organization-details", OrganizationsController, :show
 
       scope "/organizations/:organization_id", Organizations do
+        # Users
+        get "/users", UsersController, :index
+
         # Collections
         get "/collections", CollectionsController, :index
         get "/collections/:id/details", CollectionsController, :show

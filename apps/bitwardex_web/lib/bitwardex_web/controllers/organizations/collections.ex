@@ -6,6 +6,7 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
   use BitwardexWeb, :controller
 
   alias Bitwardex.Accounts
+  alias Bitwardex.Accounts.Schemas.UserCollection
   alias Bitwardex.Core
 
   alias Bitwardex.Repo
@@ -48,30 +49,42 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
     resp(conn, 200, "")
   end
 
-  def get_users(conn, %{"organization_id" => organization_id, "collection_id" => collection_id}) do
-    {:ok, collection} = Core.get_collection_by_organization(organization_id, collection_id)
+  def get_users(conn, %{"organization_id" => organization_id, "id" => id}) do
+    {:ok, collection} = Core.get_collection_by_organization(organization_id, id)
 
     users =
       collection
       |> Repo.preload(collection_users: [:user])
-      |> Enum.reduce([], fn collection, acc ->
-        Enum.reduce(collection.collection_users, acc, fn cu, acc2 ->
-          [cu | acc2]
-        end)
-      end)
-      |> Enum.uniq()
+      |> Map.get(:collection_users)
+      |> Enum.map(&encode_collection_users_details/1)
 
-    json(conn, %{
-      "Data" => users,
-      "Object" => "list",
-      "ContinuationToken" => nil
-    })
+    json(conn, users)
   end
 
   def update_users(
         conn,
-        %{"organization_id" => organization_id, "collection" => collection_id} = params
+        %{"organization_id" => organization_id, "id" => id, "_json" => users_data}
       ) do
-    {:ok, collection} = Core.get_collection_by_organization(organization_id, collection_id)
+    {:ok, collection} = Core.get_collection_by_organization(organization_id, id)
+
+    users =
+      Enum.map(users_data, fn user_data ->
+        %{
+          user_id: Map.fetch!(user_data, "id"),
+          read_only: Map.fetch!(user_data, "read_only")
+        }
+      end)
+
+    case Core.update_collection_users(collection, users) do
+      {:ok, _response} -> resp(conn, 200, "")
+      {:error, _} -> resp(conn, 500, "")
+    end
+  end
+
+  defp encode_collection_users_details(%UserCollection{} = collection_user) do
+    %{
+      "Id" => collection_user.user.id,
+      "ReadOnly" => collection_user.read_only
+    }
   end
 end

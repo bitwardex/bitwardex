@@ -7,6 +7,8 @@ defmodule Bitwardex.Core do
   alias Bitwardex.Core.Managers.Cipher, as: CipherManager
   alias Bitwardex.Core.Managers.Folder, as: FolderManager
 
+  alias Bitwardex.Core.Services.UpdateCollectionUsers
+
   # Folders
 
   defdelegate list_folders(user_id), to: FolderManager
@@ -26,12 +28,13 @@ defmodule Bitwardex.Core do
   # Collections
 
   defdelegate list_collections(organization_id), to: CollectionManager
-
-  defdelegate get_collection_by_organization(organization_id, collection_id),
-    to: CollectionManager
-
-  defdelegate get_collection_by_user(user_id, collection_id), to: CollectionManager
+  defdelegate get_collection_by_organization(organization_id, id), to: CollectionManager
+  defdelegate get_collection_by_user(user_id, id), to: CollectionManager
   defdelegate create_collection(params), to: CollectionManager
   defdelegate update_collection(collection, params), to: CollectionManager
   defdelegate delete_collection(collection), to: CollectionManager
+
+  defdelegate update_collection_users(collection, users_data),
+    to: UpdateCollectionUsers,
+    as: :call
 end

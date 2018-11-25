@@ -9,14 +9,11 @@ defmodule BitwardexWeb.SnakizeParamsPlug do
 
   @impl true
   def call(%Plug.Conn{params: params} = conn, _opts) do
-    IO.inspect(params)
     %{conn | params: snakize_params(params)}
   end
 
   defp snakize_params(params) when is_map(params) do
-    params
-    |> Enum.map(&snakize_params/1)
-    |> Enum.into(%{})
+    Enum.into(params, %{}, &snakize_params/1)
   end
 
   defp snakize_params(params) when is_list(params), do: Enum.map(params, &snakize_params/1)

@@ -21,6 +21,19 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
     timestamps(type: :utc_datetime)
   end
 
+  # @user_types %{
+  #   owner: 0,
+  #   admin: 1,
+  #   user: 2,
+  #   manager: 3
+  # }
+
+  # @user_status %{
+  #   invited: 0,
+  #   accepted: 1,
+  #   confirmed: 2
+  # }
+
   @required_fields [
     :access_all,
     :key,
