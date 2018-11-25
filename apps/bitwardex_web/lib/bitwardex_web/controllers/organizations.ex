@@ -12,7 +12,14 @@ defmodule BitwardexWeb.OrganizationsController do
 
     case Accounts.create_organization(params, user) do
       {:ok, %{organization: organization}} -> json(conn, organization)
-      {:error, _step, _changeset, _changes_so_far} -> nil
+      {:error, _step, _changeset, _changes_so_far} -> resp(conn, 500, "")
+    end
+  end
+
+  def show(conn, %{"organization_id" => id}) do
+    case Accounts.get_organization(id) do
+      {:ok, organization} -> json(conn, organization)
+      {:error, _err} -> resp(conn, 404, "")
     end
   end
 end

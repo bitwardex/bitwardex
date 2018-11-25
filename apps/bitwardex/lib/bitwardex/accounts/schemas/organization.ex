@@ -51,14 +51,16 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
         "BusinessCountry" => struct.business_country,
         "BusinessTaxNumber" => struct.business_tax_number,
         "BillingEmail" => struct.billing_email,
-        # TeamsAnnually plan
+
+        # Organization-hardcoded values
+        # TODO: Move this to the organization schema to persist it in DB
         "Plan" => "TeamsAnnually",
         "PlanType" => 5,
         "UsersGetPremium" => true,
         "Seats" => 1000,
         "MaxCollections" => 1000,
         # The value doesn't matter, we don't check server-side
-        "MaxStorageGb" => 10,
+        "MaxStorageGb" => nil,
         "Use2fa" => true,
         "UseDirectory" => false,
         "UseEvents" => false,

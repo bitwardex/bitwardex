@@ -63,7 +63,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
         "Key" => struct.key,
         "PrivateKey" => struct.keys.encrypted_private_key,
         "SecurityStamp" => struct.id,
-        "Organizations" => [],
+        "Organizations" => struct.user_organizations,
         "Object" => "profile"
       }
 

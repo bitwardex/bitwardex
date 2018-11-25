@@ -39,7 +39,7 @@ defmodule Bitwardex.Core.Schemas.Collection do
       encoded_struct = %{
         "Id" => struct.id,
         "Name" => struct.name,
-        "OrganizationId" => struct.organization,
+        "OrganizationId" => struct.organization_id,
         "Object" => "collection"
       }
 

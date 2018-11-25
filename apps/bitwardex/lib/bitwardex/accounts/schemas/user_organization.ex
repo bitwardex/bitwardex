@@ -39,4 +39,33 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
     |> assoc_constraint(:user)
     |> assoc_constraint(:organization)
   end
+
+  defimpl Jason.Encoder, for: __MODULE__ do
+    def encode(struct, _opts) do
+      encoded_struct = %{
+        "Id" => struct.organization.id,
+        "Name" => struct.organization.name,
+        "Key" => struct.key,
+        "Status" => struct.status,
+        "Type" => struct.type,
+        "Enabled" => true,
+
+        # Organization-hardcoded values
+        # TODO: Move this to the organization schema to persist it in DB
+        "UsersGetPremium" => true,
+        "Seats" => 1000,
+        "MaxCollections" => 1000,
+        # The value doesn't matter, we don't check server-side
+        "MaxStorageGb" => nil,
+        "Use2fa" => true,
+        "UseDirectory" => false,
+        "UseEvents" => false,
+        "UseGroups" => false,
+        "UseTotp" => true,
+        "Object" => "profileOrganization"
+      }
+
+      Jason.encode!(encoded_struct)
+    end
+  end
 end

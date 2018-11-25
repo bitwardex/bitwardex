@@ -6,8 +6,8 @@ defmodule Bitwardex.Core.Managers.Collection do
   alias Bitwardex.Core.Schemas.Collection
 
   def list_collections(organization_id) do
-    Cipher
-    |> CollectionQuery.by_user(organization_id)
+    Collection
+    |> CollectionQuery.by_organization(organization_id)
     |> Repo.all()
   end
 

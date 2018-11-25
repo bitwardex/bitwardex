@@ -5,7 +5,6 @@ defmodule Bitwardex.Accounts.Services.CreateOrganization do
   alias Bitwardex.Core.Managers.Collection
   alias Ecto.Multi
   alias Bitwardex.Repo
-  alias Bitwardex.Accounts.Schemas.UserCollection
   alias Bitwardex.Accounts.Schemas.UserOrganization
 
   def call(params, user) do
