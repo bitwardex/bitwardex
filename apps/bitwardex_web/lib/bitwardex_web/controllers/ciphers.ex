@@ -28,13 +28,21 @@ defmodule BitwardexWeb.CiphersController do
 
     preloaded_cipher = Repo.preload(cipher, [:collections])
 
-    json(conn, preloaded_cipher)
+    conn
+    |> assign(:current_user, user)
+    |> assign(:cipher, preloaded_cipher)
+    |> render("cipher.json")
   end
 
   def show(conn, %{"id" => id}) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
-        json(conn, cipher)
+        conn
+        |> assign(:current_user, user)
+        |> assign(:cipher, cipher)
+        |> render("cipher.json")
 
       _err ->
         resp(conn, 404, "")
@@ -42,11 +50,16 @@ defmodule BitwardexWeb.CiphersController do
   end
 
   def update(conn, %{"id" => id} = params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, params)
 
-        json(conn, updated_cipher)
+        conn
+        |> assign(:current_user, user)
+        |> assign(:cipher, updated_cipher)
+        |> render("cipher.json")
 
       _err ->
         resp(conn, 404, "")
@@ -54,13 +67,17 @@ defmodule BitwardexWeb.CiphersController do
   end
 
   def update_collections(conn, %{"id" => id, "collection_ids" => collection_ids}) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{} = updated_cipher} =
           Core.update_cipher(cipher, %{"collection_ids" => collection_ids})
 
-        preloaded_updated_cipher = Repo.preload(updated_cipher, [:collections])
-        json(conn, preloaded_updated_cipher)
+        conn
+        |> assign(:current_user, user)
+        |> assign(:cipher, updated_cipher)
+        |> render("cipher.json")
 
       _err ->
         resp(conn, 404, "")
