@@ -40,14 +40,16 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     timestamps()
   end
 
-  @required_field [:name]
-  @optional_fields [:notes, :favorite, :type, :folder_id, :user_id, :organization_id]
+  @required_fields [:name]
+  @optional_fields_create [:notes, :favorite, :type, :folder_id, :user_id, :organization_id]
+  @optional_fields_update [:notes, :favorite, :type, :folder_id]
 
   @doc false
-  def changeset(folder, attrs) do
-    folder
-    |> cast(attrs, @required_field ++ @optional_fields)
-    |> validate_required(@required_field)
+  def changeset_create(cipher, attrs) do
+    cipher
+    |> cast(attrs, @required_fields ++ @optional_fields_create)
+    |> validate_required(@required_fields)
+    |> validate_ownership()
     |> assoc_constraint(:user)
     |> assoc_constraint(:organization)
     |> assoc_constraint(:folder)
@@ -56,6 +58,48 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     |> cast_embed(:identity)
     |> cast_embed(:login)
     |> cast_embed(:secure_note)
+  end
+
+  @doc false
+  def changeset_update(cipher, attrs) do
+    cipher
+    |> cast(attrs, @required_fields ++ @optional_fields_update)
+    |> validate_required(@required_fields)
+    |> validate_ownership()
+    |> assoc_constraint(:user)
+    |> assoc_constraint(:organization)
+    |> assoc_constraint(:folder)
+    |> cast_embed(:fields)
+    |> cast_embed(:card)
+    |> cast_embed(:identity)
+    |> cast_embed(:login)
+    |> cast_embed(:secure_note)
+  end
+
+  defp validate_ownership(changeset) do
+    case changeset.valid? do
+      true ->
+        user_id = get_field(changeset, :user_id)
+        org_id = get_field(changeset, :org_id)
+
+        case {user_id, org_id} do
+          {nil, _org_id} ->
+            changeset
+
+          {_user_id, nil} ->
+            changeset
+
+          _ ->
+            add_error(
+              changeset,
+              :user_id,
+              "Either user_id or organization_id must be present, not both or none of them."
+            )
+        end
+
+      _ ->
+        changeset
+    end
   end
 
   defimpl Jason.Encoder, for: __MODULE__ do

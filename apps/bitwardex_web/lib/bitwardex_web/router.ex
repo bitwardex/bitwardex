@@ -34,6 +34,7 @@ defmodule BitwardexWeb.Router do
       resources "/ciphers", CiphersController, only: [:create, :update, :delete]
       get "/ciphers/:id/admin", CiphersController, :show
       post "/ciphers/admin", CiphersController, :create
+      put "/ciphers/:id/admin", CiphersController, :update
       delete "/ciphers/:id/admin", CiphersController, :delete
       post "/ciphers/create", CiphersController, :create
       put "/ciphers/:id/collections-admin", CiphersController, :update_collections

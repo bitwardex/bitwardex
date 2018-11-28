@@ -25,7 +25,9 @@ defmodule BitwardexWeb.CiphersController do
       |> Map.put("user_id", user.id)
       |> Core.create_cipher()
 
-    json(conn, cipher)
+    preloaded_cipher = Repo.preload(cipher, [:collections])
+
+    json(conn, preloaded_cipher)
   end
 
   def show(conn, %{"id" => id}) do
@@ -53,10 +55,11 @@ defmodule BitwardexWeb.CiphersController do
   def update_collections(conn, %{"id" => id, "collection_ids" => collection_ids}) do
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
-        attrs = %{"collection_ids" => collection_ids}
-        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, attrs)
+        {:ok, %Cipher{} = updated_cipher} =
+          Core.update_cipher(cipher, %{"collection_ids" => collection_ids})
 
-        json(conn, updated_cipher)
+        preloaded_updated_cipher = Repo.preload(updated_cipher, [:collections])
+        json(conn, preloaded_updated_cipher)
 
       _err ->
         resp(conn, 404, "")

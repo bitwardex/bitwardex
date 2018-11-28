@@ -31,42 +31,37 @@ defmodule Bitwardex.Core.Managers.Cipher do
     end
   end
 
-  def create_cipher(%{"organization_id" => org_id} = attrs)
-      when org_id != "" and not is_nil(org_id) do
-    collection_ids = Map.get(attrs, "collection_ids", [])
-
-    collections =
-      Collection
-      |> where([c], c.id in ^collection_ids)
-      |> Repo.all()
-
-    updated_attrs =
-      attrs
-      |> Map.delete("user_id")
-
-    %Cipher{}
-    |> Cipher.changeset(updated_attrs)
-    |> Ecto.Changeset.put_assoc(:collections, collections)
-    |> Repo.insert()
-  end
-
   def create_cipher(attrs) do
-    updated_attrs =
-      attrs
-      |> Map.delete("organization_id")
+    changeset = Cipher.changeset_create(%Cipher{}, attrs)
 
-    %Cipher{}
-    |> Cipher.changeset(updated_attrs)
+    with org_id <- Ecto.Changeset.get_field(changeset, :organization_id),
+         false <- is_nil(org_id),
+         false <- org_id != "" do
+      parse_collections_data(changeset, attrs)
+    else
+      _ -> changeset
+    end
     |> Repo.insert()
   end
 
-  def update_cipher(%Cipher{organization_id: nil} = cipher, attrs) do
-    cipher
-    |> Cipher.changeset(attrs)
+  def update_cipher(%Cipher{} = cipher, attrs) do
+    changeset = Cipher.changeset_update(cipher, attrs)
+
+    with org_id <- Ecto.Changeset.get_field(changeset, :organization_id),
+         false <- is_nil(org_id),
+         false <- org_id != "" do
+      parse_collections_data(changeset, attrs)
+    else
+      _ -> changeset
+    end
     |> Repo.update()
   end
 
-  def update_cipher(%Cipher{user_id: nil} = cipher, attrs) do
+  def delete_cipher(%Cipher{} = cipher) do
+    Repo.delete(cipher)
+  end
+
+  defp parse_collections_data(changeset, attrs) do
     case Map.fetch(attrs, "collection_ids") do
       {:ok, collection_ids} when is_list(collection_ids) ->
         collections =
@@ -74,17 +69,10 @@ defmodule Bitwardex.Core.Managers.Cipher do
           |> where([c], c.id in ^collection_ids)
           |> Repo.all()
 
-        cipher
-        |> Cipher.changeset(attrs)
-        |> Ecto.Changeset.put_assoc(:collections, collections)
+        Ecto.Changeset.put_assoc(changeset, :collections, collections)
 
       _ ->
-        Cipher.changeset(cipher, attrs)
+        changeset
     end
-    |> Repo.update()
-  end
-
-  def delete_cipher(%Cipher{} = cipher) do
-    Repo.delete(cipher)
   end
 end
