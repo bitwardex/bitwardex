@@ -7,6 +7,13 @@ defmodule Bitwardex.Core.Services.GetUserCollections do
 
   alias Bitwardex.Repo
 
+  @doc """
+  Service to get all user-s available collections, and if they are read
+  only or not.
+
+  It gets a user schema and return a list of tuples like:
+  `[{collection, read_only}]`, where `read_only` is a boolean.
+  """
   def call(%User{} = user) do
     user_preloaded =
       Repo.preload(user,

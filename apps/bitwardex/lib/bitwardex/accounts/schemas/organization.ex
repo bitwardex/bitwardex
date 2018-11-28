@@ -3,6 +3,7 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
   import Ecto.Changeset
 
   alias Bitwardex.Accounts.Schemas.UserOrganization
+  alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Core.Schemas.Collection
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -23,6 +24,7 @@ defmodule Bitwardex.Accounts.Schemas.Organization do
     has_many :users, through: [:organization_users, :user]
 
     has_many :collections, Collection
+    has_many :ciphers, Cipher
 
     timestamps(type: :utc_datetime)
   end

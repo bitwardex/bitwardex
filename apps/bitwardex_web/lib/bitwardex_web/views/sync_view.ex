@@ -1,11 +1,11 @@
 defmodule BitwardexWeb.SyncView do
   use BitwardexWeb, :view
 
-  def render("sync.json", %{current_user: user, collections: collections}) do
+  def render("sync.json", %{current_user: user, ciphers: ciphers, collections: collections}) do
     %{
       "Profile" => user,
       "Folders" => user.folders,
-      "Ciphers" => user.ciphers,
+      "Ciphers" => ciphers,
       "Collections" => Enum.map(collections, &render_user_collection/1),
       "Domains" => [],
       "Object" => "sync"
