@@ -16,10 +16,33 @@ defmodule BitwardexWeb.OrganizationsController do
     end
   end
 
-  def show(conn, %{"organization_id" => id}) do
+  def show(conn, %{"id" => id}) do
     case Accounts.get_organization(id) do
       {:ok, organization} -> json(conn, organization)
       {:error, _err} -> resp(conn, 404, "")
+    end
+  end
+
+  def update(conn, %{"id" => id} = params) do
+    case Accounts.get_organization(id) do
+      {:ok, organization} ->
+        {:ok, updated_organization} = Accounts.update_organization(organization, params)
+
+        json(conn, updated_organization)
+
+      {:error, _err} ->
+        resp(conn, 404, "")
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    case Accounts.get_organization(id) do
+      {:ok, organization} ->
+        {:ok, _org} = Accounts.delete_organization(organization)
+        resp(conn, 200, "")
+
+      {:error, _err} ->
+        resp(conn, 404, "")
     end
   end
 end

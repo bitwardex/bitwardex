@@ -41,6 +41,9 @@ defmodule BitwardexWeb.Router do
       post "/ciphers/purge", CiphersController, :purge
 
       post "/organizations", OrganizationsController, :create
+      get "/organizations/:id", OrganizationsController, :show
+      put "/organizations/:id", OrganizationsController, :update
+      delete "/organizations/:id", OrganizationsController, :delete
       get "/ciphers/organization-details", Organizations.CiphersController, :index
 
       scope "/organizations/:organization_id", Organizations do

@@ -5,6 +5,7 @@ defmodule BitwardexWeb.CiphersController do
 
   use BitwardexWeb, :controller
 
+  alias Bitwardex.Accounts
   alias Bitwardex.Core
   alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Repo
@@ -77,13 +78,39 @@ defmodule BitwardexWeb.CiphersController do
     end
   end
 
+  def purge(conn, %{"organization_id" => organization_id} = params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
+    {:ok, organization} = Accounts.get_organization(organization_id)
+
+    if user.master_password_hash == Map.get(params, "master_password_hash") do
+      organization
+      |> Repo.preload(:ciphers)
+      |> Map.get(:ciphers)
+      |> Enum.each(&Core.delete_cipher/1)
+
+      resp(conn, 200, "")
+    else
+      conn
+      |> put_status(400)
+      |> json(%{
+        "ValidationErrors" => %{
+          "MasterPasswordHash" => [
+            "Invalid password."
+          ]
+        },
+        "Object" => "error"
+      })
+    end
+  end
+
   def purge(conn, params) do
     user =
       conn
       |> BitwardexWeb.Guardian.Plug.current_resource()
       |> Repo.preload([:ciphers, :folders])
 
-    if user.master_password_hash == Map.get(params, "masterPasswordHash") do
+    if user.master_password_hash == Map.get(params, "master_password_hash") do
       Enum.each(user.ciphers, &Core.delete_cipher/1)
       Enum.each(user.folders, &Core.delete_folder/1)
       resp(conn, 200, "")

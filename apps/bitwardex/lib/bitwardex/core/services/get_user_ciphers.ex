@@ -25,7 +25,6 @@ defmodule Bitwardex.Core.Services.GetUserCiphers do
       |> Enum.reduce([], fn org_ciphers, acc ->
         acc ++ org_ciphers
       end)
-      |> IO.inspect()
 
     ciphers_collections_user =
       user_preloaded
@@ -33,7 +32,6 @@ defmodule Bitwardex.Core.Services.GetUserCiphers do
       |> Enum.reduce([], fn user_collection, acc ->
         acc ++ user_collection.collection.ciphers
       end)
-      |> IO.inspect()
 
     ciphers_user
     |> Kernel.++(ciphers_collections_organizations)
