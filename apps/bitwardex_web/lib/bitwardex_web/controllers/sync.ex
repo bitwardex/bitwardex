@@ -16,6 +16,7 @@ defmodule BitwardexWeb.SyncController do
       |> Repo.preload(folders: [], user_organizations: [:organization])
 
     collections = Core.get_user_collections(user)
+
     ciphers = Core.get_user_ciphers(user)
 
     exclude_domains = Map.get(params, "excludeDomains") == "true"

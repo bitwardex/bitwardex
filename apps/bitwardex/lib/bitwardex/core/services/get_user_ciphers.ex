@@ -35,6 +35,9 @@ defmodule Bitwardex.Core.Services.GetUserCiphers do
       end)
       |> IO.inspect()
 
-    ciphers_user ++ ciphers_collections_organizations ++ ciphers_collections_user
+    ciphers_user
+    |> Kernel.++(ciphers_collections_organizations)
+    |> Kernel.++(ciphers_collections_user)
+    |> Repo.preload(:collections)
   end
 end

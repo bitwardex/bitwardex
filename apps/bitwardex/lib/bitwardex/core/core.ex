@@ -21,8 +21,9 @@ defmodule Bitwardex.Core do
 
   # Ciphers
 
-  defdelegate list_ciphers(user_id), to: CipherManager
-  defdelegate get_cipher(user_id, cipher_id), to: CipherManager
+  defdelegate list_ciphers_by_user(user_id), to: CipherManager
+  defdelegate list_ciphers_by_organization(organization_id), to: CipherManager
+  defdelegate get_cipher(cipher_id), to: CipherManager
   defdelegate create_cipher(params), to: CipherManager
   defdelegate update_cipher(cipher, params), to: CipherManager
   defdelegate delete_cipher(cipher), to: CipherManager

@@ -5,6 +5,7 @@ defmodule Bitwardex.Core.Schemas.Collection do
   alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Accounts.Schemas.UserCollection
   alias Bitwardex.Core.Schemas.Cipher
+  alias Bitwardex.Core.Schemas.CipherCollection
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -17,7 +18,9 @@ defmodule Bitwardex.Core.Schemas.Collection do
     has_many :collection_users, UserCollection
     has_many :users, through: [:collection_users, :users]
 
-    many_to_many :ciphers, Cipher, join_through: "ciphers_collections"
+    many_to_many :ciphers, Cipher,
+      join_through: CipherCollection,
+      on_replace: :delete
 
     timestamps()
   end

@@ -12,18 +12,34 @@ defmodule BitwardexWeb.CiphersController do
   def create(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
+    data =
+      with {:ok, cipher_data} <- Map.fetch(params, "cipher"),
+           collection_ids <- Map.get(params, "collection_ids", []) do
+        Map.put(cipher_data, "collection_ids", collection_ids)
+      else
+        _ -> params
+      end
+
     {:ok, cipher} =
-      params
+      data
       |> Map.put("user_id", user.id)
       |> Core.create_cipher()
 
     json(conn, cipher)
   end
 
-  def update(conn, %{"id" => id} = params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+  def show(conn, %{"id" => id}) do
+    case Core.get_cipher(id) do
+      {:ok, %Cipher{} = cipher} ->
+        json(conn, cipher)
 
-    case Core.get_cipher(user.id, id) do
+      _err ->
+        resp(conn, 404, "")
+    end
+  end
+
+  def update(conn, %{"id" => id} = params) do
+    case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, params)
 
@@ -34,10 +50,21 @@ defmodule BitwardexWeb.CiphersController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+  def update_collections(conn, %{"id" => id, "collection_ids" => collection_ids}) do
+    case Core.get_cipher(id) do
+      {:ok, %Cipher{} = cipher} ->
+        attrs = %{"collection_ids" => collection_ids}
+        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, attrs)
 
-    case Core.get_cipher(user.id, id) do
+        json(conn, updated_cipher)
+
+      _err ->
+        resp(conn, 404, "")
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{}} = Core.delete_cipher(cipher)
         resp(conn, 200, "")

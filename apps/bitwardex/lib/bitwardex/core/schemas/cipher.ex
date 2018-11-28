@@ -4,6 +4,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
 
   alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Core.Schemas.CipherCollection
   alias Bitwardex.Core.Schemas.Collection
   alias Bitwardex.Core.Schemas.Field
   alias Bitwardex.Core.Schemas.Folder
@@ -25,7 +26,10 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     belongs_to :user, User
     belongs_to :organization, Organization
     belongs_to :folder, Folder
-    many_to_many :collections, Collection, join_through: "ciphers_collections"
+
+    many_to_many :collections, Collection,
+      join_through: CipherCollection,
+      on_replace: :delete
 
     embeds_many :fields, Field, on_replace: :delete
     embeds_one :card, Card, on_replace: :delete
@@ -99,6 +103,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
         "Edit" => true,
         "Id" => struct.id,
         "OrganizationId" => struct.organization_id,
+        "CollectionIds" => Enum.map(struct.collections, & &1.id),
         "Type" => struct.type,
         "Notes" => struct.notes,
         "Fields" => struct.fields,
