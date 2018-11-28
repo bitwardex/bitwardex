@@ -97,7 +97,7 @@ defmodule BitwardexWeb.AccountsController do
         )
     end
   end
-
+  
   def update_profile(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
