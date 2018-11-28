@@ -7,6 +7,7 @@ defmodule Bitwardex.Core do
   alias Bitwardex.Core.Managers.Collection, as: CollectionManager
   alias Bitwardex.Core.Managers.Folder, as: FolderManager
 
+  alias Bitwardex.Core.Services.GetUserCollections
   alias Bitwardex.Core.Services.UpdateCollectionUsers
 
   # Folders
@@ -36,5 +37,9 @@ defmodule Bitwardex.Core do
 
   defdelegate update_collection_users(collection, users_data),
     to: UpdateCollectionUsers,
+    as: :call
+
+  defdelegate get_user_collections(user),
+    to: GetUserCollections,
     as: :call
 end
