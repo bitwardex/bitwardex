@@ -8,6 +8,8 @@ defmodule BitwardexWeb.AccountsController do
   alias Bitwardex.Accounts
   alias Bitwardex.Accounts.Schemas.User
 
+  alias Bitwardex.Repo
+
   def register(conn, params) do
     case Accounts.create_user(params) do
       {:ok, _user} ->
@@ -60,7 +62,11 @@ defmodule BitwardexWeb.AccountsController do
   def login(conn, _params), do: invalid_user_response(conn)
 
   def profile(conn, _params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user =
+      conn
+      |> BitwardexWeb.Guardian.Plug.current_resource()
+      |> Repo.preload([:organizations])
+
     json(conn, user)
   end
 
