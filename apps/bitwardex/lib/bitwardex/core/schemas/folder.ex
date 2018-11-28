@@ -3,6 +3,7 @@ defmodule Bitwardex.Core.Schemas.Folder do
   import Ecto.Changeset
 
   alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Core.Schemas.CipherFolder
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -11,6 +12,9 @@ defmodule Bitwardex.Core.Schemas.Folder do
     field :name, :string
 
     belongs_to :user, User
+
+    has_many :folder_ciphers, CipherFolder
+    has_many :ciphers, through: [:folder_ciphers, :cipher]
 
     timestamps()
   end

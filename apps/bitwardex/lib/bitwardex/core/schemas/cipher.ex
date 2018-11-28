@@ -7,7 +7,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   alias Bitwardex.Core.Schemas.CipherCollection
   alias Bitwardex.Core.Schemas.Collection
   alias Bitwardex.Core.Schemas.Field
-  alias Bitwardex.Core.Schemas.Folder
+  alias Bitwardex.Core.Schemas.CipherFolder
 
   alias Bitwardex.Core.Schemas.Ciphers.Card
   alias Bitwardex.Core.Schemas.Ciphers.Identity
@@ -25,7 +25,9 @@ defmodule Bitwardex.Core.Schemas.Cipher do
 
     belongs_to :user, User
     belongs_to :organization, Organization
-    belongs_to :folder, Folder
+
+    has_many :cipher_folders, CipherFolder
+    has_many :folder, through: [:cipher_folders, :folder]
 
     many_to_many :collections, Collection,
       join_through: CipherCollection,
@@ -41,8 +43,8 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   end
 
   @required_fields [:name]
-  @optional_fields_create [:notes, :favorite, :type, :folder_id, :user_id, :organization_id]
-  @optional_fields_update [:notes, :favorite, :type, :folder_id]
+  @optional_fields_create [:notes, :favorite, :type, :user_id, :organization_id]
+  @optional_fields_update [:notes, :favorite, :type]
 
   @doc false
   def changeset_create(cipher, attrs) do
@@ -52,7 +54,6 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     |> validate_ownership()
     |> assoc_constraint(:user)
     |> assoc_constraint(:organization)
-    |> assoc_constraint(:folder)
     |> cast_embed(:fields)
     |> cast_embed(:card)
     |> cast_embed(:identity)
@@ -68,7 +69,6 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     |> validate_ownership()
     |> assoc_constraint(:user)
     |> assoc_constraint(:organization)
-    |> assoc_constraint(:folder)
     |> cast_embed(:fields)
     |> cast_embed(:card)
     |> cast_embed(:identity)
