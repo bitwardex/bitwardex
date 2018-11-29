@@ -53,31 +53,4 @@ defmodule Bitwardex.Core.Schemas.Ciphers.Identity do
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
   end
-
-  defimpl Jason.Encoder, for: __MODULE__ do
-    def encode(struct, _opts) do
-      encoded_struct = %{
-        "Address1" => struct.address1,
-        "Address2" => struct.address2,
-        "Address3" => struct.address3,
-        "City" => struct.city,
-        "Company" => struct.company,
-        "Country" => struct.country,
-        "Email" => struct.email,
-        "FirstName" => struct.first_name,
-        "MiddleName" => struct.middle_name,
-        "LastName" => struct.last_name,
-        "LicenseNumber" => struct.license_number,
-        "PassportNumber" => struct.passport_number,
-        "Phone" => struct.phone,
-        "PostalCode" => struct.postal_code,
-        "SSN" => struct.ssn,
-        "State" => struct.state,
-        "Title" => struct.title,
-        "Username" => struct.username
-      }
-
-      Jason.encode!(encoded_struct)
-    end
-  end
 end

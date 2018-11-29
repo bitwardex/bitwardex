@@ -4,6 +4,7 @@ defmodule Bitwardex.Core do
   """
 
   alias Bitwardex.Core.Managers.Cipher, as: CipherManager
+  alias Bitwardex.Core.Managers.CipherFolder, as: CipherFolderManager
   alias Bitwardex.Core.Managers.Collection, as: CollectionManager
   alias Bitwardex.Core.Managers.Folder, as: FolderManager
 
@@ -24,13 +25,19 @@ defmodule Bitwardex.Core do
   defdelegate list_ciphers_by_user(user_id), to: CipherManager
   defdelegate list_ciphers_by_organization(organization_id), to: CipherManager
   defdelegate get_cipher(cipher_id), to: CipherManager
-  defdelegate create_cipher(params), to: CipherManager
-  defdelegate update_cipher(cipher, params), to: CipherManager
+  defdelegate create_cipher(user, params), to: CipherManager
+  defdelegate update_cipher(cipher, user, params), to: CipherManager
   defdelegate delete_cipher(cipher), to: CipherManager
 
   defdelegate get_user_ciphers(user),
     to: GetUserCiphers,
     as: :call
+
+  # CipherFolder
+
+  defdelegate get_cipher_folder(cipher, user), to: CipherFolderManager
+  defdelegate insert_or_update_cipher_folder(cipher, user, folder), to: CipherFolderManager
+  defdelegate delete_cipher_folder(cipher, user), to: CipherFolderManager
 
   # Collections
 

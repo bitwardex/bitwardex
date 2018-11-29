@@ -30,18 +30,4 @@ defmodule Bitwardex.Core.Schemas.Ciphers.Login do
     |> validate_required(@required_fields)
     |> cast_embed(:uris)
   end
-
-  defimpl Jason.Encoder, for: __MODULE__ do
-    def encode(struct, _opts) do
-      encoded_struct = %{
-        "Username" => struct.username,
-        "Password" => struct.password,
-        "PasswordRevisionDate" => struct.password_revision_date,
-        "Totp" => struct.totp,
-        "Uris" => struct.uris
-      }
-
-      Jason.encode!(encoded_struct)
-    end
-  end
 end

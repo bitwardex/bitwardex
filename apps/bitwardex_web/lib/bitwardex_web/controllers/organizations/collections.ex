@@ -6,16 +6,22 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
   use BitwardexWeb, :controller
 
   alias Bitwardex.Accounts
-  alias Bitwardex.Accounts.Schemas.UserCollection
   alias Bitwardex.Core
+
+  alias BitwardexWeb.Organizations.CollectionsView
 
   alias Bitwardex.Repo
 
   def index(conn, %{"organization_id" => organization_id}) do
-    collections = Core.list_collections(organization_id)
+    collections_json =
+      organization_id
+      |> Core.list_collections()
+      |> Enum.map(fn collection ->
+        CollectionsView.render("collection.json", %{collection: collection})
+      end)
 
     json(conn, %{
-      "Data" => collections,
+      "Data" => collections_json,
       "Object" => "list",
       "ContinuationToken" => nil
     })
@@ -24,7 +30,9 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
   def show(conn, %{"organization_id" => organization_id, "id" => id}) do
     {:ok, collection} = Core.get_collection_by_organization(organization_id, id)
 
-    json(conn, collection)
+    conn
+    |> assign(:collection, collection)
+    |> render("collection.json")
   end
 
   def create(conn, %{"organization_id" => organization_id, "name" => name}) do
@@ -32,14 +40,19 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
 
     {:ok, collection} = Core.create_collection(%{organization_id: organization_id, name: name})
 
-    json(conn, collection)
+    conn
+    |> assign(:collection, collection)
+    |> render("collection.json")
   end
 
   def update(conn, %{"organization_id" => organization_id, "id" => id, "name" => name}) do
     {:ok, collection} = Core.get_collection_by_organization(organization_id, id)
 
     {:ok, updated_collection} = Core.update_collection(collection, %{name: name})
-    json(conn, updated_collection)
+
+    conn
+    |> assign(:collection, updated_collection)
+    |> render("collection.json")
   end
 
   def delete(conn, %{"organization_id" => organization_id, "id" => id}) do
@@ -56,7 +69,9 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
       collection
       |> Repo.preload(collection_users: [:user])
       |> Map.get(:collection_users)
-      |> Enum.map(&encode_collection_users_details/1)
+      |> Enum.map(fn collection_user ->
+        CollectionsView.render("collection_user.json", %{collection_user: collection_user})
+      end)
 
     json(conn, users)
   end
@@ -79,12 +94,5 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
       {:ok, _response} -> resp(conn, 200, "")
       {:error, _} -> resp(conn, 500, "")
     end
-  end
-
-  defp encode_collection_users_details(%UserCollection{} = collection_user) do
-    %{
-      "Id" => collection_user.user.id,
-      "ReadOnly" => collection_user.read_only
-    }
   end
 end
