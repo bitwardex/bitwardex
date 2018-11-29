@@ -1,17 +1,25 @@
 defmodule BitwardexWeb.CiphersView do
   use BitwardexWeb, :view
 
+  alias Bitwardex.Core
   alias Bitwardex.Core.Schemas.Cipher
+  alias Bitwardex.Core.Schemas.CipherFolder
   alias Bitwardex.Core.Schemas.Ciphers.Card
   alias Bitwardex.Core.Schemas.Ciphers.Identity
   alias Bitwardex.Core.Schemas.Ciphers.Login
   alias Bitwardex.Core.Schemas.Ciphers.SecureNote
   alias Bitwardex.Core.Schemas.Field
 
-  def render("cipher.json", %{current_user: _user, cipher: %Cipher{} = cipher}) do
+  def render("cipher.json", %{current_user: user, cipher: %Cipher{} = cipher}) do
+    folder_id =
+      case Core.get_cipher_folder(cipher, user) do
+        {:ok, %CipherFolder{folder_id: folder_id}} -> folder_id
+        _ -> nil
+      end
+
     base_struct = %{
       "Name" => cipher.name,
-      # "FolderId" => cipher.folder_id,
+      "FolderId" => folder_id,
       "Favorite" => cipher.favorite,
       "Edit" => true,
       "Id" => cipher.id,

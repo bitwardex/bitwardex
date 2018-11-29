@@ -21,17 +21,15 @@ defmodule BitwardexWeb.CiphersController do
         _ -> params
       end
 
-    {:ok, cipher} =
-      data
-      |> Map.put("user_id", user.id)
-      |> Core.create_cipher()
+    with updated_data <- Map.put(data, "user_id", user.id),
+         {:ok, cipher} <- Core.create_cipher(user, updated_data) do
+      preloaded_cipher = Repo.preload(cipher, [:collections])
 
-    preloaded_cipher = Repo.preload(cipher, [:collections])
-
-    conn
-    |> assign(:current_user, user)
-    |> assign(:cipher, preloaded_cipher)
-    |> render("cipher.json")
+      conn
+      |> assign(:current_user, user)
+      |> assign(:cipher, preloaded_cipher)
+      |> render("cipher.json")
+    end
   end
 
   def show(conn, %{"id" => id}) do
@@ -54,7 +52,7 @@ defmodule BitwardexWeb.CiphersController do
 
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
-        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, params)
+        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, user, params)
 
         conn
         |> assign(:current_user, user)
@@ -72,7 +70,7 @@ defmodule BitwardexWeb.CiphersController do
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{} = updated_cipher} =
-          Core.update_cipher(cipher, %{"collection_ids" => collection_ids})
+          Core.update_cipher(cipher, user, %{"collection_ids" => collection_ids})
 
         conn
         |> assign(:current_user, user)
