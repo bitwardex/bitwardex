@@ -5,9 +5,9 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Accounts.Schemas.User
   alias Bitwardex.Core.Schemas.CipherCollection
+  alias Bitwardex.Core.Schemas.CipherFolder
   alias Bitwardex.Core.Schemas.Collection
   alias Bitwardex.Core.Schemas.Field
-  alias Bitwardex.Core.Schemas.CipherFolder
 
   alias Bitwardex.Core.Schemas.Ciphers.Card
   alias Bitwardex.Core.Schemas.Ciphers.Identity
@@ -32,7 +32,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     many_to_many :collections, Collection,
       join_through: CipherCollection,
       on_replace: :delete
-      
+
     embeds_many :fields, Field, on_replace: :delete
     embeds_one :card, Card, on_replace: :delete
     embeds_one :identity, Identity, on_replace: :delete
