@@ -6,14 +6,27 @@ defmodule BitwardexWeb.Emails do
   alias Bitwardex.Accounts.Schemas.User
   alias Bitwardex.Accounts.Schemas.UserOrganization
 
-  def invite_email(%User{} = user, %Organization{} = organization, %UserOrganization{} = user_org) do
+  def organization_invite_email(
+        %User{} = user,
+        %Organization{} = organization,
+        %UserOrganization{} = user_org
+      ) do
     base_email()
     |> to(user.email)
     |> subject("Join #{organization.name}")
     |> assign(:user_organization, user_org)
     |> assign(:organization, organization)
     |> assign(:user, user)
-    |> render("invite.html")
+    |> render("organization_invite.html")
+  end
+
+  def organization_confirm_email(%User{} = user, %Organization{} = organization) do
+    base_email()
+    |> to(user.email)
+    |> subject("You Have Been Confirmed To #{organization.name}")
+    |> assign(:organization, organization)
+    |> assign(:user, user)
+    |> render("organization_confirm.html")
   end
 
   defp base_email do

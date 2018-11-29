@@ -96,7 +96,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
 
         Enum.each(invites, fn
           {:ok, user, user_org} ->
-            Emails.invite_email(user, organization, user_org) |> Mailer.deliver_now()
+            Emails.organization_invite_email(user, organization, user_org) |> Mailer.deliver_now()
 
           _ ->
             nil
@@ -118,7 +118,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
          {:ok, user_org} <- Accounts.get_user_organization(organization, id),
          {:ok, user} <- Accounts.get_user(user_org.user_id) do
-      Emails.invite_email(user, organization, user_org) |> Mailer.deliver_now()
+      Emails.organization_invite_email(user, organization, user_org) |> Mailer.deliver_now()
       resp(conn, 200, "")
     else
       _ ->
@@ -141,8 +141,10 @@ defmodule BitwardexWeb.Organizations.UsersController do
   def confirm(conn, %{"organization_id" => organization_id, "id" => id, "key" => key}) do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
          {:ok, user_org} <- Accounts.get_user_organization(organization, id),
+         {:ok, user} <- Accounts.get_user(user_org.user_id),
          {:ok, _updated_user_org} <-
            Accounts.update_user_organization(user_org, %{status: 2, key: key}) do
+      Emails.organization_confirm_email(user, organization) |> Mailer.deliver_now()
       resp(conn, 200, "")
     else
       _ ->
@@ -152,8 +154,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
 
   def delete(conn, %{"organization_id" => organization_id, "id" => id}) do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
-         {:ok, user} <- Accounts.get_user(id),
-         {:ok, user_organization} <- Accounts.get_user_organization(organization, user) do
+         {:ok, user_organization} <- Accounts.get_user_organization(organization, id) do
       {:ok, _} = Repo.delete(user_organization)
       resp(conn, 200, "")
     else
