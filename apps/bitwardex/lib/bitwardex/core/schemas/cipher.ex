@@ -80,7 +80,7 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     case changeset.valid? do
       true ->
         user_id = get_field(changeset, :user_id)
-        org_id = get_field(changeset, :org_id)
+        org_id = get_field(changeset, :organization_id)
 
         case {user_id, org_id} do
           {nil, _org_id} ->

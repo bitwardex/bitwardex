@@ -42,7 +42,7 @@ defmodule Bitwardex.Core.Managers.Cipher do
            false <- org_id in [nil, ""] do
         parse_collections_data(changeset, attrs)
       else
-        _ -> changeset
+        _ -> Cipher.changeset_create(changeset, %{user_id: user.id})
       end
 
     Ecto.Multi.new()

@@ -21,8 +21,7 @@ defmodule BitwardexWeb.CiphersController do
         _ -> params
       end
 
-    with updated_data <- Map.put(data, "user_id", user.id),
-         {:ok, cipher} <- Core.create_cipher(user, updated_data) do
+    with {:ok, cipher} <- Core.create_cipher(user, data) do
       preloaded_cipher = Repo.preload(cipher, [:collections])
 
       conn
