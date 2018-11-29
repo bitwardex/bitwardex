@@ -29,19 +29,4 @@ defmodule Bitwardex.Core.Schemas.Ciphers.Card do
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
   end
-
-  defimpl Jason.Encoder, for: __MODULE__ do
-    def encode(struct, _opts) do
-      encoded_struct = %{
-        "Brand" => struct.brand,
-        "CardholderName" => struct.cardholder_name,
-        "Code" => struct.code,
-        "ExpMonth" => struct.exp_month,
-        "ExpYear" => struct.exp_year,
-        "Number" => struct.number
-      }
-
-      Jason.encode!(encoded_struct)
-    end
-  end
 end

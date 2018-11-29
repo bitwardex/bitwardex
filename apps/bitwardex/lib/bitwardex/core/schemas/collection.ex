@@ -39,17 +39,4 @@ defmodule Bitwardex.Core.Schemas.Collection do
     |> validate_required(@required_field)
     |> assoc_constraint(:organization)
   end
-
-  defimpl Jason.Encoder, for: __MODULE__ do
-    def encode(struct, _opts) do
-      encoded_struct = %{
-        "Id" => struct.id,
-        "Name" => struct.name,
-        "OrganizationId" => struct.organization_id,
-        "Object" => "collection"
-      }
-
-      Jason.encode!(encoded_struct)
-    end
-  end
 end
