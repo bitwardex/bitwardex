@@ -49,12 +49,14 @@ defmodule BitwardexWeb.Router do
       scope "/organizations/:organization_id", Organizations do
         # Users
         get "/users", UsersController, :index
+        get "/users/:id", UsersController, :show
+        put "/users/:id", UsersController, :update
+        post "/users/:id/delete", UsersController, :delete
+        delete "/users/:id", UsersController, :delete
         post "/users/invite", UsersController, :invite
         post "/users/:id/accept", UsersController, :accept
         post "/users/:id/confirm", UsersController, :confirm
         post "/users/:id/reinvite", UsersController, :reinvite
-        post "/users/:id/delete", UsersController, :delete
-        delete "/users/:id", UsersController, :delete
 
         # Collections
         get "/collections", CollectionsController, :index

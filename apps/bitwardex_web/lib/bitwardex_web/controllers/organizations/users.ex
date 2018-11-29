@@ -7,6 +7,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
 
   alias Bitwardex.Accounts
   alias Bitwardex.Accounts.Schemas.UserOrganization
+  alias Bitwardex.Core
 
   alias Bitwardex.Repo
 
@@ -30,6 +31,49 @@ defmodule BitwardexWeb.Organizations.UsersController do
 
       {:error, _err} ->
         resp(conn, 500, "")
+    end
+  end
+
+  def show(conn, %{"organization_id" => organization_id, "id" => id}) do
+    with {:ok, organization} <- Accounts.get_organization(organization_id),
+         {:ok, user_org} <- Accounts.get_user_organization(organization, id) do
+      preloaded_user_org = Repo.preload(user_org, [:user_collections])
+
+      conn
+      |> assign(:user_organization, preloaded_user_org)
+      |> render("user_organization.json")
+    else
+      _ ->
+        resp(conn, 404, "")
+    end
+  end
+
+  def update(
+        conn,
+        %{
+          "organization_id" => organization_id,
+          "id" => id,
+          "access_all" => access_all,
+          "collections" => collections,
+          "type" => type
+        }
+      ) do
+    with {:ok, organization} <- Accounts.get_organization(organization_id),
+         {:ok, user_org} <- Accounts.get_user_organization(organization, id) do
+      collections_data =
+        Enum.map(collections, fn %{"id" => id, "read_only" => read_only} ->
+          %{id: id, read_only: read_only}
+        end)
+
+      {:ok, updated_user_org} =
+        Accounts.update_user_organization(user_org, %{type: type, access_all: access_all})
+
+      {:ok, _updated_org_user} = Core.update_user_collections(updated_user_org, collections_data)
+
+      resp(conn, 200, "")
+    else
+      _ ->
+        resp(conn, 404, "")
     end
   end
 
