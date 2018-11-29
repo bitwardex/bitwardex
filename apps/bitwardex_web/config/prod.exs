@@ -22,6 +22,15 @@ config :bitwardex_web, BitwardexWeb.Guardian,
   issuer: "Bitwardex",
   secret_key: "${GUARDIAN_SECRET_KEY}"
 
+# Mailer settings
+config :bitwardex_web, Bitwardex.Mailer,
+  adapter: Bamboo.SMTPAdapter,
+  server: "${SMTP_SERVER}",
+  port: "${SMTP_PORT}",
+  username: "${SMTP_USERNAME}",
+  password: "${SMTP_PASSWORD}",
+  tls: :always
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
