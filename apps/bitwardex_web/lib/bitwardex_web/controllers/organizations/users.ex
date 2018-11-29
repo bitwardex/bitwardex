@@ -51,8 +51,8 @@ defmodule BitwardexWeb.Organizations.UsersController do
           end)
 
         Enum.each(invites, fn
-          {:ok, user, %UserOrganization{invite_token: token}} ->
-            Emails.invite_email(user, organization, token) |> Mailer.deliver_now()
+          {:ok, user, user_org} ->
+            Emails.invite_email(user, organization, user_org) |> Mailer.deliver_now()
 
           _ ->
             nil
@@ -74,7 +74,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
          {:ok, user_org} <- Accounts.get_user_organization(organization, id),
          {:ok, user} <- Accounts.get_user(user_org.user_id) do
-      Emails.invite_email(user, organization, user_org.invite_token) |> Mailer.deliver_now()
+      Emails.invite_email(user, organization, user_org) |> Mailer.deliver_now()
       resp(conn, 200, "")
     else
       _ ->

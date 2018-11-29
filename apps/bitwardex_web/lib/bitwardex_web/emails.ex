@@ -4,12 +4,13 @@ defmodule BitwardexWeb.Emails do
 
   alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Accounts.Schemas.UserOrganization
 
-  def invite_email(%User{} = user, %Organization{} = organization, token) do
+  def invite_email(%User{} = user, %Organization{} = organization, %UserOrganization{} = user_org) do
     base_email()
     |> to(user.email)
     |> subject("Join #{organization.name}")
-    |> assign(:token, token)
+    |> assign(:user_organization, user_org)
     |> assign(:organization, organization)
     |> assign(:user, user)
     |> render("invite.html")

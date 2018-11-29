@@ -13,7 +13,7 @@ defmodule BitwardexWeb.SyncController do
     user =
       conn
       |> BitwardexWeb.Guardian.Plug.current_resource()
-      |> Repo.preload(folders: [], user_organizations: [:organization])
+      |> Repo.preload(folders: [], confirmed_user_organizations: [:organization])
 
     collections = Core.get_user_collections(user)
 

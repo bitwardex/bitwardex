@@ -22,7 +22,7 @@ defmodule BitwardexWeb.Organizations.CollectionsView do
 
   def render("collection_user.json", %{collection_user: collection_user}) do
     %{
-      "Id" => collection_user.user.id,
+      "Id" => collection_user.user_organization.id,
       "ReadOnly" => collection_user.read_only
     }
   end

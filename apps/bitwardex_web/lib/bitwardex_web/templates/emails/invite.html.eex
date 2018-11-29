@@ -1,5 +1,5 @@
 <p>You have been invited to join the <b><%= @organization.name %></b> organization.</p>
 
-<p><%= link("Join Organization Now", to: BitwardexWeb.Endpoint.url() <> "/#/accept-organization?organizationId=#{@organization.id}&organizationUserId=#{@user.id}&email=#{@user.email}&organizationName=#{@organization.name}&token=#{@token}") %></p>
+<p><%= link("Join Organization Now", to: BitwardexWeb.Endpoint.url() <> "/#/accept-organization?organizationId=#{@organization.id}&organizationUserId=#{@user_organization.id}&email=#{@user.email}&organizationName=#{@organization.name}&token=#{@user_organization.invite_token}") %></p>
 
 <p>If you do not wish to join this organization, you can safely ignore this email.</p>

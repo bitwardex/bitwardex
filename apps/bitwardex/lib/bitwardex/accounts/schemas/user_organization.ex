@@ -7,6 +7,7 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
 
   alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Accounts.Schemas.UserCollection
 
   schema "users_organizations" do
     field :access_all, :boolean
@@ -19,6 +20,9 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
 
     belongs_to(:user, User)
     belongs_to(:organization, Organization)
+
+    has_many :user_collections, UserCollection
+    has_many :collections, through: [:user_collections, :collection]
 
     timestamps(type: :utc_datetime)
   end

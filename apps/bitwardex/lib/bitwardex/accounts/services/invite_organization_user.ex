@@ -39,7 +39,10 @@ defmodule Bitwardex.Accounts.Services.InviteOrganizationUser do
   end
 
   defp check_user_already_invited(organization, user) do
-    case Repo.get_by(UserOrganization, user_id: user.id, organization_id: organization.id) do
+    case Repo.get_by(UserOrganization,
+           user_id: user.id,
+           organization_id: organization.id
+         ) do
       nil -> :ok
       _ -> {:error, :user_already_invited}
     end
@@ -51,15 +54,19 @@ defmodule Bitwardex.Accounts.Services.InviteOrganizationUser do
   defp assign_collections(multi, user, false, collections) do
     Enum.reduce(collections, multi, fn
       %{"id" => collection_id, "read_only" => read_only}, acc_multi ->
-        collection_changeset =
-          %UserCollection{}
-          |> UserCollection.changeset(%{
-            user_id: user.id,
-            collection_id: collection_id,
-            read_only: read_only
-          })
-
-        Ecto.Multi.insert(acc_multi, {:collection, collection_id}, collection_changeset)
+        Ecto.Multi.run(
+          multi,
+          {:collection, collection_id},
+          fn _repo, %{user_organization: user_org} ->
+            %UserCollection{}
+            |> UserCollection.changeset(%{
+              user_organization_id: user_org.id,
+              collection_id: collection_id,
+              read_only: read_only
+            })
+            |> Repo.insert()
+          end
+        )
     end)
   end
 
