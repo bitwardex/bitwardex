@@ -3,7 +3,6 @@ defmodule Bitwardex.Accounts.Schemas.User do
   import Ecto.Changeset
 
   alias Bitwardex.Accounts.Schemas.Keys
-  alias Bitwardex.Accounts.Schemas.UserCollection
   alias Bitwardex.Accounts.Schemas.UserOrganization
   alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Core.Schemas.Folder
@@ -28,10 +27,10 @@ defmodule Bitwardex.Accounts.Schemas.User do
     has_many :folders, Folder
 
     has_many :user_organizations, UserOrganization
-    has_many :organizations, through: [:user_organizations, :organization]
+    has_many :confirmed_user_organizations, UserOrganization, where: [status: 2]
+    has_many :organizations, through: [:confirmed_user_organizations, :organization]
+    has_many :user_collections, through: [:user_organizations, :user_collections]
 
-    has_many :user_collections, UserCollection
-    
     timestamps(type: :utc_datetime)
   end
 
@@ -64,7 +63,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
         "Key" => struct.key,
         "PrivateKey" => struct.keys.encrypted_private_key,
         "SecurityStamp" => struct.id,
-        "Organizations" => struct.user_organizations,
+        "Organizations" => struct.confirmed_user_organizations,
         "Object" => "profile"
       }
 

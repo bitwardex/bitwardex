@@ -7,6 +7,7 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
 
   alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Accounts.Schemas.UserCollection
 
   schema "users_organizations" do
     field :access_all, :boolean
@@ -15,8 +16,13 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
     field :status, :integer
     field :type, :integer
 
+    field :invite_token, Ecto.UUID, default: Ecto.UUID.generate()
+
     belongs_to(:user, User)
     belongs_to(:organization, Organization)
+
+    has_many :user_collections, UserCollection
+    has_many :collections, through: [:user_collections, :collection]
 
     timestamps(type: :utc_datetime)
   end
@@ -36,21 +42,48 @@ defmodule Bitwardex.Accounts.Schemas.UserOrganization do
 
   @required_fields [
     :access_all,
-    :key,
     :user_id,
     :organization_id,
     :status,
     :type
   ]
-  @optional_fields []
+  @optional_fields [
+    :invite_token,
+    :key
+  ]
 
   @doc false
   def changeset(user, attrs) do
     user
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+    |> validate_keys()
     |> assoc_constraint(:user)
     |> assoc_constraint(:organization)
+  end
+
+  defp validate_keys(changeset) do
+    case changeset.valid? do
+      true ->
+        status = get_field(changeset, :status)
+        invite_token = get_field(changeset, :invite_token)
+        key = get_field(changeset, :key)
+
+        case {status, invite_token, key} do
+          {2, _invite_token, _key} when not is_bitstring(key) or key == "" ->
+            add_error(changeset, :key, "Key is needed when user us confirmed.")
+
+          {status, invite_token, _key}
+          when status in [0, 1] and (not is_bitstring(invite_token) or invite_token == "") ->
+            add_error(changeset, :invite_token, "Invite token is needed for users not confirmed.")
+
+          _ ->
+            changeset
+        end
+
+      _ ->
+        changeset
+    end
   end
 
   defimpl Jason.Encoder, for: __MODULE__ do

@@ -19,7 +19,8 @@ defmodule Bitwardex.Core.Managers.CipherFolder do
   def insert_or_update_cipher_folder(%Cipher{} = cipher, %User{} = user, folder_id) do
     cipher_folder = Repo.get_by(CipherFolder, cipher_id: cipher.id, user_id: user.id)
 
-    case cipher_folder do
+    cipher_folder
+    |> case do
       %CipherFolder{} = cipher_folder -> cipher_folder
       nil -> %CipherFolder{}
     end

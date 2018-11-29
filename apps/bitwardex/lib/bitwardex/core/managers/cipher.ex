@@ -1,6 +1,6 @@
 defmodule Bitwardex.Core.Managers.Cipher do
   import Ecto.Query, warn: false
-  
+
   alias Bitwardex.Repo
 
   alias Bitwardex.Accounts.Schemas.User

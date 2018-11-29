@@ -13,21 +13,22 @@ defmodule Bitwardex.Core.Services.UpdateCollectionUsers do
   alias Ecto.Multi
 
   def call(%Collection{} = collection, users_data) do
-    user_ids = Enum.map(users_data, fn ud -> Map.fetch!(ud, :user_id) end)
+    org_user_ids = Enum.map(users_data, fn ud -> Map.fetch!(ud, :user_id) end)
 
     organization_user_ids =
       collection
       |> Repo.preload(organization: [:organization_users])
       |> Map.get(:organization)
       |> Map.get(:organization_users)
-      |> Enum.map(fn ou -> ou.user_id end)
+      |> Enum.map(fn ou -> ou.id end)
 
     # Check that all users received belongs to the organization
-    case Enum.find(user_ids, &(&1 not in organization_user_ids)) do
+    case Enum.find(org_user_ids, &(&1 not in organization_user_ids)) do
       nil ->
         users_to_remove =
           from uc in UserCollection,
-            where: uc.collection_id == ^collection.id and uc.user_id not in ^user_ids
+            where:
+              uc.collection_id == ^collection.id and uc.user_organization_id not in ^org_user_ids
 
         Multi.new()
         |> Multi.delete_all(:users_removed, users_to_remove)
@@ -46,8 +47,8 @@ defmodule Bitwardex.Core.Services.UpdateCollectionUsers do
       |> Map.get(:collection_users)
 
     users_data
-    |> Enum.map(fn %{user_id: user_id, read_only: read_only} ->
-      case Enum.find(collection_users, &(&1.user_id == user_id)) do
+    |> Enum.map(fn %{user_id: org_user_id, read_only: read_only} ->
+      case Enum.find(collection_users, &(&1.user_organization_id == org_user_id)) do
         %UserCollection{} = cu ->
           # Update user that is already assigned
           cu
@@ -59,7 +60,7 @@ defmodule Bitwardex.Core.Services.UpdateCollectionUsers do
           %UserCollection{}
           |> UserCollection.changeset(%{
             collection_id: collection.id,
-            user_id: user_id,
+            user_organization_id: org_user_id,
             read_only: read_only
           })
           |> Repo.insert()

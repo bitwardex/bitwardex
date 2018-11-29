@@ -24,7 +24,7 @@ defmodule BitwardexWeb.MixProject do
   def application do
     [
       mod: {BitwardexWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :bamboo, :bamboo_smtp]
     ]
   end
 
@@ -40,11 +40,14 @@ defmodule BitwardexWeb.MixProject do
       {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
+      {:phoenix_html, "~> 2.12"},
       {:gettext, "~> 0.11"},
       {:bitwardex, in_umbrella: true},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:guardian, "~> 1.0"}
+      {:guardian, "~> 1.0"},
+      {:bamboo, "~> 1.1"},
+      {:bamboo_smtp, "~> 1.6.0"}
     ]
   end
 

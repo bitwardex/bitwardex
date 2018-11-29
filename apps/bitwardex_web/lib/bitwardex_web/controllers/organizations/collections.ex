@@ -67,7 +67,7 @@ defmodule BitwardexWeb.Organizations.CollectionsController do
 
     users =
       collection
-      |> Repo.preload(collection_users: [:user])
+      |> Repo.preload(collection_users: [:user_organization])
       |> Map.get(:collection_users)
       |> Enum.map(fn collection_user ->
         CollectionsView.render("collection_user.json", %{collection_user: collection_user})
