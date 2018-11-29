@@ -30,7 +30,7 @@ defmodule Bitwardex.Accounts.Services.InviteOrganizationUser do
       |> assign_collections(user, access_all, validated_collections)
       |> Repo.transaction()
       |> case do
-        {:ok, %{user_organization: user_org}} -> {:ok, user_org}
+        {:ok, %{user_organization: user_org}} -> {:ok, user, user_org}
         {:error, _, err, _} -> raise RuntimeError, inspect(err)
       end
     else

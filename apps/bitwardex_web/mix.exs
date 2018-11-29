@@ -40,6 +40,7 @@ defmodule BitwardexWeb.MixProject do
       {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
+      {:phoenix_html, "~> 2.12"},
       {:gettext, "~> 0.11"},
       {:bitwardex, in_umbrella: true},
       {:jason, "~> 1.0"},
