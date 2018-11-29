@@ -49,6 +49,7 @@ defmodule BitwardexWeb.Router do
       scope "/organizations/:organization_id", Organizations do
         # Users
         get "/users", UsersController, :index
+        post "/users/invite", UsersController, :invite
 
         # Collections
         get "/collections", CollectionsController, :index

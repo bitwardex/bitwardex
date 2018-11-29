@@ -30,6 +30,33 @@ defmodule BitwardexWeb.Organizations.UsersController do
     end
   end
 
+  def invite(
+        conn,
+        %{
+          "organization_id" => organization_id,
+          "emails" => emails,
+          "access_all" => access_all,
+          "collections" => collections,
+          "type" => type
+        }
+      ) do
+    case Accounts.get_organization(organization_id) do
+      {:ok, organization} ->
+        emails
+        |> Enum.map(fn email ->
+          Accounts.invite_organization_user(organization, email, type, access_all, collections)
+        end)
+        |> Enum.all?(fn result -> elem(result, 0) == :ok end)
+        |> case do
+          true -> resp(conn, 200, "")
+          false -> resp(conn, 500, "")
+        end
+
+      {:error, _err} ->
+        resp(conn, 500, "")
+    end
+  end
+
   defp encode_organization_user_details(%UserOrganization{} = org_user) do
     %{
       "Id" => org_user.user.id,

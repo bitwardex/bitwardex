@@ -25,4 +25,8 @@ defmodule Bitwardex.Accounts do
   defdelegate create_organization(params, user),
     to: Bitwardex.Accounts.Services.CreateOrganization,
     as: :call
+
+  defdelegate invite_organization_user(organization, email, type, access_all, collections),
+    to: Bitwardex.Accounts.Services.InviteOrganizationUser,
+    as: :call
 end
