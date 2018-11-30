@@ -68,6 +68,20 @@ defmodule BitwardexWeb.AccountsController do
 
   def login(conn, _params), do: invalid_user_response(conn)
 
+  def password_hint(conn, %{"email" => email}) do
+    case Accounts.get_user_by_email(email) do
+      {:ok, user} ->
+        user
+        |> Emails.master_password_hint_email()
+        |> Mailer.deliver_now()
+
+        resp(conn, 200, "")
+
+      {:error, _} ->
+        resp(conn, 404, "")
+    end
+  end
+
   def profile(conn, _params) do
     user =
       conn
@@ -114,7 +128,7 @@ defmodule BitwardexWeb.AccountsController do
     params = %{
       culture: Map.get(params, "culture"),
       name: Map.get(params, "name"),
-      master_password_hint: Map.get(params, "master_password_hash")
+      master_password_hint: Map.get(params, "master_password_hint")
     }
 
     {:ok, updated_user} = Accounts.update_user(user, params)

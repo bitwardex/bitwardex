@@ -14,6 +14,14 @@ defmodule BitwardexWeb.Emails do
     |> render("welcome.html")
   end
 
+  def master_password_hint_email(%User{} = user) do
+    base_email()
+    |> to(user.email)
+    |> subject("Your Master Password Hint")
+    |> assign(:user, user)
+    |> render("master_password_hint.html")
+  end
+
   def organization_invite_email(
         %User{} = user,
         %Organization{} = organization,
