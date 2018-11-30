@@ -37,6 +37,7 @@ defmodule BitwardexWeb do
 
       import BitwardexWeb.ErrorHelpers
       import BitwardexWeb.Gettext
+      use Phoenix.HTML
       alias BitwardexWeb.Router.Helpers, as: Routes
     end
   end

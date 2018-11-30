@@ -5,6 +5,7 @@ defmodule BitwardexWeb.CiphersController do
 
   use BitwardexWeb, :controller
 
+  alias Bitwardex.Accounts
   alias Bitwardex.Core
   alias Bitwardex.Core.Schemas.Cipher
   alias Bitwardex.Repo
@@ -12,26 +13,68 @@ defmodule BitwardexWeb.CiphersController do
   def create(conn, params) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
-    parsed_params = parse_params(params)
+    data =
+      with {:ok, cipher_data} <- Map.fetch(params, "cipher"),
+           collection_ids <- Map.get(params, "collection_ids", []) do
+        Map.put(cipher_data, "collection_ids", collection_ids)
+      else
+        _ -> params
+      end
 
-    {:ok, cipher} =
-      parsed_params
-      |> Map.put("user_id", user.id)
-      |> Core.create_cipher()
+    with {:ok, cipher} <- Core.create_cipher(user, data) do
+      preloaded_cipher = Repo.preload(cipher, [:collections])
 
-    json(conn, cipher)
+      conn
+      |> assign(:current_user, user)
+      |> assign(:cipher, preloaded_cipher)
+      |> render("cipher.json")
+    end
   end
 
-  def update(conn, params = %{"id" => id}) do
+  def show(conn, %{"id" => id}) do
     user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
-    parsed_params = parse_params(params)
-
-    case Core.get_cipher(user.id, id) do
+    case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
-        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, parsed_params)
+        conn
+        |> assign(:current_user, user)
+        |> assign(:cipher, cipher)
+        |> render("cipher.json")
 
-        json(conn, updated_cipher)
+      _err ->
+        resp(conn, 404, "")
+    end
+  end
+
+  def update(conn, %{"id" => id} = params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
+    case Core.get_cipher(id) do
+      {:ok, %Cipher{} = cipher} ->
+        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, user, params)
+
+        conn
+        |> assign(:current_user, user)
+        |> assign(:cipher, updated_cipher)
+        |> render("cipher.json")
+
+      _err ->
+        resp(conn, 404, "")
+    end
+  end
+
+  def update_collections(conn, %{"id" => id, "collection_ids" => collection_ids}) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+
+    case Core.get_cipher(id) do
+      {:ok, %Cipher{} = cipher} ->
+        {:ok, %Cipher{} = updated_cipher} =
+          Core.update_cipher(cipher, user, %{"collection_ids" => collection_ids})
+
+        conn
+        |> assign(:current_user, user)
+        |> assign(:cipher, updated_cipher)
+        |> render("cipher.json")
 
       _err ->
         resp(conn, 404, "")
@@ -39,9 +82,7 @@ defmodule BitwardexWeb.CiphersController do
   end
 
   def delete(conn, %{"id" => id}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
-
-    case Core.get_cipher(user.id, id) do
+    case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{}} = Core.delete_cipher(cipher)
         resp(conn, 200, "")
@@ -51,15 +92,17 @@ defmodule BitwardexWeb.CiphersController do
     end
   end
 
-  def purge(conn, params) do
-    user =
-      conn
-      |> BitwardexWeb.Guardian.Plug.current_resource()
-      |> Repo.preload([:ciphers, :folders])
+  def purge(conn, %{"organization_id" => organization_id} = params) do
+    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
 
-    if user.master_password_hash == Map.get(params, "masterPasswordHash") do
-      Enum.each(user.ciphers, &Core.delete_cipher/1)
-      Enum.each(user.folders, &Core.delete_folder/1)
+    {:ok, organization} = Accounts.get_organization(organization_id)
+
+    if user.master_password_hash == Map.get(params, "master_password_hash") do
+      organization
+      |> Repo.preload(:ciphers)
+      |> Map.get(:ciphers)
+      |> Enum.each(&Core.delete_cipher/1)
+
       resp(conn, 200, "")
     else
       conn
@@ -75,18 +118,27 @@ defmodule BitwardexWeb.CiphersController do
     end
   end
 
-  defp parse_params(params) do
-    params
-    |> Enum.map(fn
-      {key, value} when is_list(value) or is_map(value) ->
-        {Macro.underscore(key), parse_params(value)}
+  def purge(conn, params) do
+    user =
+      conn
+      |> BitwardexWeb.Guardian.Plug.current_resource()
+      |> Repo.preload([:ciphers, :folders])
 
-      {key, value} ->
-        {Macro.underscore(key), value}
-
-      value ->
-        value
-    end)
-    |> Enum.into(%{})
+    if user.master_password_hash == Map.get(params, "master_password_hash") do
+      Enum.each(user.ciphers, &Core.delete_cipher/1)
+      Enum.each(user.folders, &Core.delete_folder/1)
+      resp(conn, 200, "")
+    else
+      conn
+      |> put_status(400)
+      |> json(%{
+        "ValidationErrors" => %{
+          "MasterPasswordHash" => [
+            "Invalid password."
+          ]
+        },
+        "Object" => "error"
+      })
+    end
   end
 end

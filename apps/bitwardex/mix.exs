@@ -23,7 +23,7 @@ defmodule Bitwardex.MixProject do
   def application do
     [
       mod: {Bitwardex.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :jason]
     ]
   end
 
@@ -37,7 +37,8 @@ defmodule Bitwardex.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:jason, "~> 1.0"}
     ]
   end
 

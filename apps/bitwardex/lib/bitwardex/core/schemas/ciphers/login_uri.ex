@@ -21,15 +21,4 @@ defmodule Bitwardex.Core.Schemas.Ciphers.LoginUri do
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
   end
-
-  defimpl Jason.Encoder, for: __MODULE__ do
-    def encode(struct, _opts) do
-      encoded_struct = %{
-        "Match" => struct.match,
-        "Uri" => struct.uri
-      }
-
-      Jason.encode!(encoded_struct)
-    end
-  end
 end

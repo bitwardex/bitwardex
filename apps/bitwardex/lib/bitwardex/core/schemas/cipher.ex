@@ -2,9 +2,12 @@ defmodule Bitwardex.Core.Schemas.Cipher do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bitwardex.Accounts.Schemas.Organization
   alias Bitwardex.Accounts.Schemas.User
+  alias Bitwardex.Core.Schemas.CipherCollection
+  alias Bitwardex.Core.Schemas.CipherFolder
+  alias Bitwardex.Core.Schemas.Collection
   alias Bitwardex.Core.Schemas.Field
-  alias Bitwardex.Core.Schemas.Folder
 
   alias Bitwardex.Core.Schemas.Ciphers.Card
   alias Bitwardex.Core.Schemas.Ciphers.Identity
@@ -21,7 +24,14 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     field :type, :integer
 
     belongs_to :user, User
-    belongs_to :folder, Folder
+    belongs_to :organization, Organization
+
+    has_many :cipher_folders, CipherFolder
+    has_many :folder, through: [:cipher_folders, :folder]
+
+    many_to_many :collections, Collection,
+      join_through: CipherCollection,
+      on_replace: :delete
 
     embeds_many :fields, Field, on_replace: :delete
     embeds_one :card, Card, on_replace: :delete
@@ -32,16 +42,18 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     timestamps()
   end
 
-  @required_field [:name, :user_id]
-  @optional_fields [:notes, :favorite, :type, :folder_id]
+  @required_fields [:name]
+  @optional_fields_create [:notes, :favorite, :type, :user_id, :organization_id]
+  @optional_fields_update [:notes, :favorite, :type]
 
   @doc false
-  def changeset(folder, attrs) do
-    folder
-    |> cast(attrs, @required_field ++ @optional_fields)
-    |> validate_required(@required_field)
+  def changeset_create(cipher, attrs) do
+    cipher
+    |> cast(attrs, @required_fields ++ @optional_fields_create)
+    |> validate_required(@required_fields)
+    |> validate_ownership()
     |> assoc_constraint(:user)
-    |> assoc_constraint(:folder)
+    |> assoc_constraint(:organization)
     |> cast_embed(:fields)
     |> cast_embed(:card)
     |> cast_embed(:identity)
@@ -49,59 +61,44 @@ defmodule Bitwardex.Core.Schemas.Cipher do
     |> cast_embed(:secure_note)
   end
 
-  defimpl Jason.Encoder, for: __MODULE__ do
-    def encode(%{type: 1} = struct, _opts) do
-      encoded_struct =
-        struct
-        |> get_base_struct()
-        |> Map.put("Login", struct.login)
+  @doc false
+  def changeset_update(cipher, attrs) do
+    cipher
+    |> cast(attrs, @required_fields ++ @optional_fields_update)
+    |> validate_required(@required_fields)
+    |> validate_ownership()
+    |> assoc_constraint(:user)
+    |> assoc_constraint(:organization)
+    |> cast_embed(:fields)
+    |> cast_embed(:card)
+    |> cast_embed(:identity)
+    |> cast_embed(:login)
+    |> cast_embed(:secure_note)
+  end
 
-      Jason.encode!(encoded_struct)
-    end
+  defp validate_ownership(changeset) do
+    case changeset.valid? do
+      true ->
+        user_id = get_field(changeset, :user_id)
+        org_id = get_field(changeset, :organization_id)
 
-    def encode(%{type: 2} = struct, _opts) do
-      encoded_struct =
-        struct
-        |> get_base_struct()
-        |> Map.put("SecureNote", struct.secure_note)
+        case {user_id, org_id} do
+          {nil, _org_id} ->
+            changeset
 
-      Jason.encode!(encoded_struct)
-    end
+          {_user_id, nil} ->
+            changeset
 
-    def encode(%{type: 3} = struct, _opts) do
-      encoded_struct =
-        struct
-        |> get_base_struct()
-        |> Map.put("Card", struct.card)
+          _ ->
+            add_error(
+              changeset,
+              :user_id,
+              "Either user_id or organization_id must be present, not both or none of them."
+            )
+        end
 
-      Jason.encode!(encoded_struct)
-    end
-
-    def encode(%{type: 4} = struct, _opts) do
-      encoded_struct =
-        struct
-        |> get_base_struct()
-        |> Map.put("Identity", struct.identity)
-
-      Jason.encode!(encoded_struct)
-    end
-
-    defp get_base_struct(struct) do
-      %{
-        "Name" => struct.name,
-        "FolderId" => struct.folder_id,
-        "Favorite" => struct.favorite,
-        "Edit" => true,
-        "Id" => struct.id,
-        "OrganizationId" => nil,
-        "Type" => struct.type,
-        "Notes" => struct.notes,
-        "Fields" => struct.fields,
-        "Attachments" => [],
-        "OrganizationUseTotp" => false,
-        "RevisionDate" => NaiveDateTime.to_iso8601(struct.updated_at),
-        "Object" => "cipher"
-      }
+      _ ->
+        changeset
     end
   end
 end

@@ -6,8 +6,8 @@ defmodule Bitwardex.Core.Managers.Folder do
   import Ecto.Query, warn: false
   alias Bitwardex.Repo
 
-  alias Bitwardex.Core.Schemas.Folder
   alias Bitwardex.Core.Queries.Folder, as: FolderQuery
+  alias Bitwardex.Core.Schemas.Folder
 
   @doc """
   Returns the list of folders.

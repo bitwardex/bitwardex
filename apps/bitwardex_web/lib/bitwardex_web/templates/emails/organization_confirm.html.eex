@@ -1,0 +1,2 @@
+<p>This email is to notify you that you have been confirmed as a user of <b><%= @organization.name %></b>.</p>
+<p>Any collections and logins being shared with you by this organization will now appear in your Bitwarden vault.</p>
