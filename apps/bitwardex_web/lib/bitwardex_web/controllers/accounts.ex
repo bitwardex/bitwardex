@@ -10,9 +10,16 @@ defmodule BitwardexWeb.AccountsController do
 
   alias Bitwardex.Repo
 
+  alias BitwardexWeb.Emails
+  alias BitwardexWeb.Mailer
+
   def register(conn, params) do
     case Accounts.create_user(params) do
-      {:ok, _user} ->
+      {:ok, user} ->
+        user
+        |> Emails.welcome_email()
+        |> Mailer.deliver()
+
         resp(conn, 200, "")
 
       {:error, _ch} ->

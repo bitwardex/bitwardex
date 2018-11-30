@@ -6,6 +6,14 @@ defmodule BitwardexWeb.Emails do
   alias Bitwardex.Accounts.Schemas.User
   alias Bitwardex.Accounts.Schemas.UserOrganization
 
+  def welcome_email(%User{} = user) do
+    base_email()
+    |> to(user.email)
+    |> subject("Welcome")
+    |> assign(:user, user)
+    |> render("welcome.html")
+  end
+
   def organization_invite_email(
         %User{} = user,
         %Organization{} = organization,
