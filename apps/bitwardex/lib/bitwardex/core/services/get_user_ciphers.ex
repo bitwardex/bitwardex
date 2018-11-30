@@ -20,7 +20,7 @@ defmodule Bitwardex.Core.Services.GetUserCiphers do
     ciphers_collections_organizations =
       user_preloaded
       |> Map.get(:user_organizations)
-      |> Enum.filter(& &1.access_all)
+      |> Enum.filter(&(&1.access_all && &1.status == 2))
       |> Enum.map(& &1.organization.ciphers)
       |> Enum.reduce([], fn org_ciphers, acc ->
         acc ++ org_ciphers

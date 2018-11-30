@@ -29,7 +29,7 @@ defmodule Bitwardex.Accounts.Schemas.User do
     has_many :user_organizations, UserOrganization
     has_many :confirmed_user_organizations, UserOrganization, where: [status: 2]
     has_many :organizations, through: [:confirmed_user_organizations, :organization]
-    has_many :user_collections, through: [:user_organizations, :user_collections]
+    has_many :user_collections, through: [:confirmed_user_organizations, :user_collections]
 
     timestamps(type: :utc_datetime)
   end
