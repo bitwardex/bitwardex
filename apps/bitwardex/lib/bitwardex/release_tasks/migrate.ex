@@ -5,7 +5,8 @@ defmodule Bitwardex.ReleaseTasks.Migrate do
     :crypto,
     :ssl,
     :postgrex,
-    :ecto
+    :ecto,
+    :telemetry
   ]
 
   def myapp, do: Application.get_application(__MODULE__)
