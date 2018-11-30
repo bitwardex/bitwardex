@@ -19,7 +19,7 @@ defmodule BitwardexWeb.SyncController do
 
     ciphers = Core.get_user_ciphers(user)
 
-    exclude_domains = Map.get(params, "excludeDomains") == "true"
+    exclude_domains = Map.get(params, "exclude_domains") == "true"
 
     conn
     |> assign(:ciphers, ciphers)
