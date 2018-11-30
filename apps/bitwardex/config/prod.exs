@@ -4,4 +4,8 @@
 # the umbrella root.
 use Mix.Config
 
-import_config "prod.secret.exs"
+# Configure your database
+config :bitwardex, Bitwardex.Repo,
+  url: "${DATABASE_URL}",
+  pool_size: 20,
+  timeout: 60_000

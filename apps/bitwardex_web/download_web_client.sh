@@ -6,7 +6,8 @@
 
 set -e
 
-git clone https://github.com/bitwarden/web.git ./tmp/web
+rm -rf ./tmp/web
+git clone  --recurse-submodules https://github.com/bitwarden/web.git ./tmp/web
 cd ./tmp/web
 npm install && npm run dist
 cp -r build ../../priv/static

@@ -24,7 +24,9 @@ defmodule Bitwardex.Umbrella.MixProject do
   defp deps do
     [
       # Code quality
-      {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false},
+      # Deploying
+      {:distillery, "~> 2.0", runtime: false}
     ]
   end
 end
