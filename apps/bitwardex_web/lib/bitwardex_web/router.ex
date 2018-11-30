@@ -85,6 +85,12 @@ defmodule BitwardexWeb.Router do
     post "/connect/token", AccountsController, :login
   end
 
+  scope "/", BitwardexWeb do
+    pipe_through :api
+
+    get "/icons/:domain/icon.png", IconsController, :show
+  end
+
   if Mix.env() == :dev do
     forward "/sent_emails", Bamboo.SentEmailViewerPlug
   end
