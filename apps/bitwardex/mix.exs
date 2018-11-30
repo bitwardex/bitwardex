@@ -23,7 +23,7 @@ defmodule Bitwardex.MixProject do
   def application do
     [
       mod: {Bitwardex.Application, []},
-      extra_applications: [:logger, :runtime_tools, :jason]
+      extra_applications: [:logger, :runtime_tools, :jason, :ecto_sql, :telemetry]
     ]
   end
 

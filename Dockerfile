@@ -19,6 +19,7 @@ RUN cd /app/apps/bitwardex_web/ && \
   bash download_web_client.sh && \
   cd /app
 
+RUN mix phx.digest
 RUN mix release --env=prod
 
 # Definitive image

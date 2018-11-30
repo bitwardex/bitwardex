@@ -6,6 +6,7 @@ defmodule Bitwardex.ReleaseTasks.Migrate do
     :ssl,
     :postgrex,
     :ecto,
+    :ecto_sql,
     :telemetry
   ]
 

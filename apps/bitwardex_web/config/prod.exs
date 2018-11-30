@@ -26,7 +26,7 @@ config :bitwardex_web, BitwardexWeb.Guardian,
   secret_key: "${GUARDIAN_SECRET_KEY}"
 
 # Mailer settings
-config :bitwardex_web, Bitwardex.Mailer,
+config :bitwardex_web, BitwardexWeb.Mailer,
   adapter: Bamboo.SMTPAdapter,
   server: "${SMTP_SERVER}",
   port: "${SMTP_PORT}",
