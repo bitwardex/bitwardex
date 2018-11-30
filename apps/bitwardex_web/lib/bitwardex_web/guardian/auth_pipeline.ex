@@ -6,4 +6,5 @@ defmodule BitwardexWeb.Guardian.AuthPipeline do
   plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}
   plug Guardian.Plug.EnsureAuthenticated
   plug Guardian.Plug.LoadResource
+  plug BitwardexWeb.CurrentUserPlug
 end

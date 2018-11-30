@@ -23,6 +23,12 @@ defmodule BitwardexWeb do
       import Plug.Conn
       import BitwardexWeb.Gettext
       alias BitwardexWeb.Router.Helpers, as: Routes
+
+      def current_user(conn) do
+        conn
+        |> Map.get(:assigns, %{})
+        |> Map.get(:current_user)
+      end
     end
   end
 

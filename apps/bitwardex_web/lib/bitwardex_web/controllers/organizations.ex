@@ -8,7 +8,7 @@ defmodule BitwardexWeb.OrganizationsController do
   alias Bitwardex.Accounts
 
   def create(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     case Accounts.create_organization(params, user) do
       {:ok, %{organization: organization}} -> json(conn, organization)

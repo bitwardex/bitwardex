@@ -64,7 +64,7 @@ defmodule BitwardexWeb.AccountsController do
   def profile(conn, _params) do
     user =
       conn
-      |> BitwardexWeb.Guardian.Plug.current_resource()
+      |> current_user()
       |> Repo.preload([:organizations])
 
     json(conn, user)
@@ -99,7 +99,10 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   def update_profile(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user =
+      conn
+      |> current_user()
+      |> Repo.preload(:organizations)
 
     params = %{
       culture: Map.get(params, "culture"),
@@ -116,7 +119,7 @@ defmodule BitwardexWeb.AccountsController do
         "encryptedPrivateKey" => encrypted_private_key,
         "publicKey" => public_key
       }) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     {:ok, updated_user} =
       Accounts.update_user(user, %{
@@ -130,7 +133,7 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   def request_email_change(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
     master_password_hash = Map.get(params, "master_password_hash")
     _new_email = Map.get(params, "new_email")
 
@@ -151,7 +154,7 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   def change_email(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
     master_password_hash = Map.get(params, "master_password_hash")
     new_email = Map.get(params, "new_email")
     new_master_password_hash = Map.get(params, "new_master_password_hash")
@@ -182,7 +185,7 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   def change_encryption(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
     master_password_hash = Map.get(params, "master_password_hash")
     new_master_password_hash = Map.get(params, "new_master_password_hash")
     new_key = Map.get(params, "key")
@@ -215,7 +218,7 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   def change_master_password(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
     master_password_hash = Map.get(params, "master_password_hash")
     new_master_password_hash = Map.get(params, "new_master_password_hash")
     new_key = Map.get(params, "key")
@@ -244,7 +247,7 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   def delete(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
     master_password_hash = Map.get(params, "master_password_hash")
 
     if user.master_password_hash == master_password_hash do
@@ -266,7 +269,7 @@ defmodule BitwardexWeb.AccountsController do
   end
 
   def revision_date(conn, _params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     updated_at =
       user.updated_at
