@@ -7,7 +7,10 @@
 set -e
 
 rm -rf ./tmp/web
-git clone  --recurse-submodules https://github.com/bitwarden/web.git ./tmp/web
+git clone https://github.com/bitwarden/web.git ./tmp/web
 cd ./tmp/web
+git checkout tags/v2.5.0
+git submodule init
+git submodule update
 npm install && npm run dist
 cp -r build ../../priv/static
