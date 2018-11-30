@@ -27,7 +27,7 @@ defmodule Bitwardex.Accounts.Services.InviteOrganizationUser do
 
       Ecto.Multi.new()
       |> Ecto.Multi.insert(:user_organization, user_organization_changeset)
-      |> assign_collections(user, access_all, validated_collections)
+      |> assign_collections(access_all, validated_collections)
       |> Repo.transaction()
       |> case do
         {:ok, %{user_organization: user_org}} -> {:ok, user, user_org}
@@ -48,14 +48,14 @@ defmodule Bitwardex.Accounts.Services.InviteOrganizationUser do
     end
   end
 
-  defp assign_collections(multi, _user, true, _collections), do: multi
-  defp assign_collections(multi, _user, false, []), do: multi
+  defp assign_collections(multi, true, _collections), do: multi
+  defp assign_collections(multi, false, []), do: multi
 
-  defp assign_collections(multi, user, false, collections) do
+  defp assign_collections(multi, false, collections) do
     Enum.reduce(collections, multi, fn
       %{"id" => collection_id, "read_only" => read_only}, acc_multi ->
         Ecto.Multi.run(
-          multi,
+          acc_multi,
           {:collection, collection_id},
           fn _repo, %{user_organization: user_org} ->
             %UserCollection{}
