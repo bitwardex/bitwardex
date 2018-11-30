@@ -1,4 +1,5 @@
 # Bitwardex
+[![CircleCI](https://circleci.com/gh/bitwardex/bitwardex.svg?style=svg)](https://circleci.com/gh/bitwardex/bitwardex)
 
 *(This project is not associated with the
 [Bitwarden](https://bitwarden.com/)
