@@ -19,7 +19,7 @@ RUN cd /app/apps/bitwardex_web/ && \
   bash download_web_client.sh && \
   cd /app
 
-RUN mix release --env=$MIX_ENV
+RUN mix release --env=prod
 
 # Definitive image
 
@@ -27,6 +27,8 @@ FROM library/alpine:3.7
 
 RUN apk --update --no-cache add bash openssl curl alpine-sdk coreutils && \
   rm -rf /var/cache/apk/*
+
+ENV REPLACE_OS_VARS true
 
 WORKDIR /app
 COPY --from=builder /app/_build/prod/rel/bitwardex .
