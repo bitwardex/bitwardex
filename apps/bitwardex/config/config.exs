@@ -12,4 +12,6 @@ config :bitwardex, :generators,
   binary_id: false,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"
 
+config :bitwardex, Bitwardex.Accounts, required_domain: ""
+
 import_config "#{Mix.env()}.exs"

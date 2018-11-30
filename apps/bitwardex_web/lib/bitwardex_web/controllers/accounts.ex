@@ -22,6 +22,9 @@ defmodule BitwardexWeb.AccountsController do
 
         resp(conn, 200, "")
 
+      {:error, :invalid_email} ->
+        invalid_email_response(conn)
+
       {:error, _ch} ->
         # TOOD send errors
         resp(conn, 500, "")
@@ -188,9 +191,16 @@ defmodule BitwardexWeb.AccountsController do
         key: new_key
       }
 
-      {:ok, _updated_user} = Accounts.update_user(user, params)
+      case Accounts.update_user(user, params) do
+        {:ok, _user} ->
+          resp(conn, 200, "")
 
-      resp(conn, 200, "")
+        {:error, :invalid_email} ->
+          invalid_email_response(conn)
+
+        {:error, _ch} ->
+          resp(conn, 500, "")
+      end
     else
       conn
       |> put_status(400)
@@ -345,6 +355,23 @@ defmodule BitwardexWeb.AccountsController do
         "ExceptionStackTrace" => nil,
         "InnerExceptionMessage" => nil,
         "Object" => "error"
+      }
+    })
+  end
+
+  defp invalid_email_response(conn) do
+    conn
+    |> put_status(400)
+    |> json(%{
+      "Message" => "Email not valid or with an unauthorized domain.",
+      "ExceptionMessage" => nil,
+      "ExceptionStackTrace" => nil,
+      "InnerExceptionMessage" => nil,
+      "Object" => "error",
+      "ValidationErrors" => %{
+        "" => [
+          "Email not valid or with an unauthorized domain."
+        ]
       }
     })
   end

@@ -92,6 +92,18 @@ defmodule Bitwardex.Accounts.Managers.User do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, user} ->
+        {:ok, user}
+
+      {:error, err} ->
+        with %Ecto.Changeset{} <- err,
+             true <- Keyword.has_key?(err.errors, :email) do
+          {:error, :invalid_email}
+        else
+          _ -> {:error, err}
+        end
+    end
   end
 
   @doc """
@@ -110,6 +122,18 @@ defmodule Bitwardex.Accounts.Managers.User do
     user
     |> User.changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, user} ->
+        {:ok, user}
+
+      {:error, err} ->
+        with %Ecto.Changeset{} <- err,
+             true <- Keyword.has_key?(err.errors, :email) do
+          {:error, :invalid_email}
+        else
+          _ -> {:error, err}
+        end
+    end
   end
 
   @doc """

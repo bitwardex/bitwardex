@@ -46,7 +46,35 @@ defmodule Bitwardex.Accounts.Schemas.User do
     |> cast_embed(:keys, required: true)
     |> validate_required(@required_fields)
     |> validate_format(:email, @email_regex)
+    |> validate_email_domain()
     |> unique_constraint(:email)
+  end
+
+  defp validate_email_domain(changeset) do
+    case changeset.valid? do
+      true ->
+        email = get_field(changeset, :email)
+
+        required_domain =
+          :bitwardex
+          |> Application.get_env(Bitwardex.Accounts, Keyword.new())
+          |> Keyword.get(:required_domain, "")
+
+        case {email, required_domain} do
+          {_email, required_domain} when required_domain in [nil, ""] ->
+            changeset
+
+          {email, required_domain} ->
+            unless String.ends_with?(email, "@#{required_domain}") do
+              add_error(changeset, :email, "Email domain not whitelisted")
+            else
+              changeset
+            end
+        end
+
+      _ ->
+        changeset
+    end
   end
 
   defimpl Jason.Encoder, for: __MODULE__ do

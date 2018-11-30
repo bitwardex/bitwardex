@@ -9,3 +9,5 @@ config :bitwardex, Bitwardex.Repo,
   url: "${DATABASE_URL}",
   pool_size: 20,
   timeout: 60_000
+
+config :bitwardex, Bitwardex.Accounts, required_domain: "${ACCOUNTS_REQUIRED_DOMAIN}"
