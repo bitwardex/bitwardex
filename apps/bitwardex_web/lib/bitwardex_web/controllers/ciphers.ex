@@ -11,7 +11,7 @@ defmodule BitwardexWeb.CiphersController do
   alias Bitwardex.Repo
 
   def create(conn, params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     data =
       with {:ok, cipher_data} <- Map.fetch(params, "cipher"),
@@ -25,19 +25,15 @@ defmodule BitwardexWeb.CiphersController do
       preloaded_cipher = Repo.preload(cipher, [:collections])
 
       conn
-      |> assign(:current_user, user)
       |> assign(:cipher, preloaded_cipher)
       |> render("cipher.json")
     end
   end
 
   def show(conn, %{"id" => id}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
-
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         conn
-        |> assign(:current_user, user)
         |> assign(:cipher, cipher)
         |> render("cipher.json")
 
@@ -47,14 +43,13 @@ defmodule BitwardexWeb.CiphersController do
   end
 
   def update(conn, %{"id" => id} = params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
         {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, user, params)
 
         conn
-        |> assign(:current_user, user)
         |> assign(:cipher, updated_cipher)
         |> render("cipher.json")
 
@@ -64,7 +59,7 @@ defmodule BitwardexWeb.CiphersController do
   end
 
   def update_collections(conn, %{"id" => id, "collection_ids" => collection_ids}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
@@ -72,7 +67,6 @@ defmodule BitwardexWeb.CiphersController do
           Core.update_cipher(cipher, user, %{"collection_ids" => collection_ids})
 
         conn
-        |> assign(:current_user, user)
         |> assign(:cipher, updated_cipher)
         |> render("cipher.json")
 
@@ -93,7 +87,7 @@ defmodule BitwardexWeb.CiphersController do
   end
 
   def purge(conn, %{"organization_id" => organization_id} = params) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     {:ok, organization} = Accounts.get_organization(organization_id)
 
@@ -121,7 +115,7 @@ defmodule BitwardexWeb.CiphersController do
   def purge(conn, params) do
     user =
       conn
-      |> BitwardexWeb.Guardian.Plug.current_resource()
+      |> current_user()
       |> Repo.preload([:ciphers, :folders])
 
     if user.master_password_hash == Map.get(params, "master_password_hash") do

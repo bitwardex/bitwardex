@@ -12,7 +12,7 @@ defmodule BitwardexWeb.SyncController do
   def sync(conn, params) do
     user =
       conn
-      |> BitwardexWeb.Guardian.Plug.current_resource()
+      |> current_user()
       |> Repo.preload(folders: [], confirmed_user_organizations: [:organization])
 
     collections = Core.get_user_collections(user)
@@ -22,8 +22,8 @@ defmodule BitwardexWeb.SyncController do
     exclude_domains = Map.get(params, "excludeDomains") == "true"
 
     conn
-    |> assign(:current_user, user)
     |> assign(:ciphers, ciphers)
+    |> assign(:current_user, user)
     |> assign(:collections, collections)
     |> assign(:exclude_domains, exclude_domains)
     |> render("sync.json")

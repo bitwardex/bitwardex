@@ -13,6 +13,7 @@ defmodule BitwardexWeb.Router do
 
     post "/accounts/register", AccountsController, :register
     post "/accounts/prelogin", AccountsController, :prelogin
+    post "/accounts/password-hint", AccountsController, :password_hint
 
     scope "/" do
       pipe_through(GuardianAuthPipeline)

@@ -10,7 +10,7 @@ defmodule BitwardexWeb.Organizations.CiphersController do
   alias BitwardexWeb.CiphersView
 
   def index(conn, %{"organization_id" => organization_id}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     ciphers_json =
       organization_id

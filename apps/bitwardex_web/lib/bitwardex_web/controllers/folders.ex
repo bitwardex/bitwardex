@@ -9,7 +9,7 @@ defmodule BitwardexWeb.FoldersController do
   alias Bitwardex.Core.Schemas.Folder
 
   def create(conn, %{"name" => name}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     {:ok, %Folder{} = folder} = Core.create_folder(%{name: name, user_id: user.id})
 
@@ -19,7 +19,7 @@ defmodule BitwardexWeb.FoldersController do
   end
 
   def update(conn, %{"id" => id, "name" => name}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     case Core.get_folder(user.id, id) do
       {:ok, %Folder{} = folder} ->
@@ -35,7 +35,7 @@ defmodule BitwardexWeb.FoldersController do
   end
 
   def delete(conn, %{"id" => id}) do
-    user = BitwardexWeb.Guardian.Plug.current_resource(conn)
+    user = current_user(conn)
 
     case Core.get_folder(user.id, id) do
       {:ok, %Folder{} = folder} ->

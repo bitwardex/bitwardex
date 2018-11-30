@@ -5,7 +5,7 @@ defmodule BitwardexWeb.Organizations.UsersView do
     %{
       "Id" => user_org.id,
       "UserId" => user_org.user_id,
-      "AcessAll" => user_org.access_all,
+      "AccessAll" => user_org.access_all,
       "Type" => user_org.type,
       "Status" => user_org.status,
       "Collections" => Enum.map(user_org.user_collections, &render_user_collection/1),

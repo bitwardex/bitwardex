@@ -54,12 +54,13 @@ defmodule BitwardexWeb.Organizations.UsersController do
           "organization_id" => organization_id,
           "id" => id,
           "access_all" => access_all,
-          "collections" => collections,
           "type" => type
-        }
+        } = params
       ) do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
          {:ok, user_org} <- Accounts.get_user_organization(organization, id) do
+      collections = Map.get(params, "collections") || []
+
       collections_data =
         Enum.map(collections, fn %{"id" => id, "read_only" => read_only} ->
           %{id: id, read_only: read_only}
@@ -83,12 +84,13 @@ defmodule BitwardexWeb.Organizations.UsersController do
           "organization_id" => organization_id,
           "emails" => emails,
           "access_all" => access_all,
-          "collections" => collections,
           "type" => type
-        }
+        } = params
       ) do
     case Accounts.get_organization(organization_id) do
       {:ok, organization} ->
+        collections = Map.get(params, "collections") || []
+
         invites =
           Enum.map(emails, fn email ->
             Accounts.invite_organization_user(organization, email, type, access_all, collections)
