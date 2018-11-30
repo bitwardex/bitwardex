@@ -14,9 +14,12 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :bitwardex_web, BitwardexWeb.Endpoint,
-  http: [:inet6, port: System.get_env("PORT") || 4000],
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  http: [port: "${PORT}", compress: true],
+  url: [scheme: "${SCHEME}", host: "${HOST}", port: "${EXTERNAL_PORT}"],
+  secret_key_base: "${SECRET_KEY_BASE}",
+  code_reloader: false,
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  server: true
 
 config :bitwardex_web, BitwardexWeb.Guardian,
   issuer: "Bitwardex",
