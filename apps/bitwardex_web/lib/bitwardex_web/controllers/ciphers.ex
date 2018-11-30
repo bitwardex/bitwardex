@@ -20,6 +20,11 @@ defmodule BitwardexWeb.CiphersController do
       else
         _ -> params
       end
+      |> Map.get("fields")
+      |> case do
+        folders when is_list(folders) -> params
+        _ -> Map.put(params, "fields", [])
+      end
 
     with {:ok, cipher} <- Core.create_cipher(user, data) do
       preloaded_cipher = Repo.preload(cipher, [:collections])
@@ -45,9 +50,15 @@ defmodule BitwardexWeb.CiphersController do
   def update(conn, %{"id" => id} = params) do
     user = current_user(conn)
 
+    sanitized_params =
+      case Map.get(params, "fields") do
+        folders when is_list(folders) -> params
+        _ -> Map.delete(params, "fields")
+      end
+
     case Core.get_cipher(id) do
       {:ok, %Cipher{} = cipher} ->
-        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, user, params)
+        {:ok, %Cipher{} = updated_cipher} = Core.update_cipher(cipher, user, sanitized_params)
 
         conn
         |> assign(:cipher, updated_cipher)
