@@ -65,10 +65,10 @@ defmodule Bitwardex.Accounts.Schemas.User do
             changeset
 
           {email, required_domain} ->
-            unless String.ends_with?(email, "@#{required_domain}") do
-              add_error(changeset, :email, "Email domain not whitelisted")
-            else
+            if String.ends_with?(email, "@#{required_domain}") do
               changeset
+            else
+              add_error(changeset, :email, "Email domain not whitelisted")
             end
         end
 
