@@ -18,7 +18,7 @@ defmodule BitwardexWeb.AccountsController do
       {:ok, user} ->
         user
         |> Emails.welcome_email()
-        |> Mailer.deliver()
+        |> Mailer.deliver_now()
 
         resp(conn, 200, "")
 
