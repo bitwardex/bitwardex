@@ -6,13 +6,13 @@ defmodule BitwardexWeb.Organizations.UsersController do
   use BitwardexWeb, :controller
 
   alias Bitwardex.Accounts
-  alias Bitwardex.Accounts.Schemas.UserOrganization
   alias Bitwardex.Core
 
   alias Bitwardex.Repo
 
   alias BitwardexWeb.Emails
   alias BitwardexWeb.Mailer
+  alias BitwardexWeb.Organizations.UsersView
 
   def index(conn, %{"organization_id" => organization_id}) do
     case Accounts.get_organization(organization_id) do
@@ -21,7 +21,9 @@ defmodule BitwardexWeb.Organizations.UsersController do
           organization
           |> Repo.preload(organization_users: [:user])
           |> Map.get(:organization_users)
-          |> Enum.map(&encode_organization_user_details/1)
+          |> Enum.map(
+            &UsersView.render("user_organization_details.json", %{user_organization: &1})
+          )
 
         json(conn, %{
           "Data" => users,
@@ -174,18 +176,5 @@ defmodule BitwardexWeb.Organizations.UsersController do
       _ ->
         resp(conn, 404, "")
     end
-  end
-
-  defp encode_organization_user_details(%UserOrganization{} = org_user) do
-    %{
-      "Id" => org_user.id,
-      "UserId" => org_user.user.id,
-      "Name" => org_user.user.name,
-      "Email" => org_user.user.email,
-      "Type" => org_user.type,
-      "Status" => org_user.status,
-      "AccessAll" => org_user.access_all,
-      "Object" => "organizationUserUserDetails"
-    }
   end
 end
