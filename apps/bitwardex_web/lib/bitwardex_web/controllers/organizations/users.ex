@@ -121,6 +121,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
   def reinvite(conn, %{"organization_id" => organization_id, "id" => id}) do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
          {:ok, user_org} <- Accounts.get_user_organization(organization, id),
+         true <- user_org.status == 0,
          {:ok, user} <- Accounts.get_user(user_org.user_id) do
       user
       |> Emails.organization_invite_email(organization, user_org)
@@ -136,6 +137,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
   def accept(conn, %{"organization_id" => organization_id, "id" => id, "token" => token}) do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
          {:ok, user_org} <- Accounts.get_user_organization(organization, id),
+         true <- user_org.status == 0,
          true <- token == user_org.invite_token,
          {:ok, _updated_user_org} <- Accounts.update_user_organization(user_org, %{status: 1}) do
       resp(conn, 200, "")
@@ -148,6 +150,7 @@ defmodule BitwardexWeb.Organizations.UsersController do
   def confirm(conn, %{"organization_id" => organization_id, "id" => id, "key" => key}) do
     with {:ok, organization} <- Accounts.get_organization(organization_id),
          {:ok, user_org} <- Accounts.get_user_organization(organization, id),
+         true <- user_org.status == 1,
          {:ok, user} <- Accounts.get_user(user_org.user_id),
          {:ok, _updated_user_org} <-
            Accounts.update_user_organization(user_org, %{status: 2, key: key}) do
