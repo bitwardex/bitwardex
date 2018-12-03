@@ -47,7 +47,9 @@ defmodule BitwardexWeb.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:guardian, "~> 1.0"},
       {:bamboo, "~> 1.1"},
-      {:bamboo_smtp, "~> 1.6.0"}
+      {:bamboo_smtp, "~> 1.6.0"},
+      # Websockets
+      {:msgpax, "~> 2.0"}
     ]
   end
 

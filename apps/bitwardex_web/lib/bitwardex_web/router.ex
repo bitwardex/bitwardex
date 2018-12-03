@@ -89,6 +89,7 @@ defmodule BitwardexWeb.Router do
     pipe_through :api
 
     get "/icons/:domain/icon.png", IconsController, :show
+    post "/notifications/hub/negotiate", NotificationsController, :negotiate
   end
 
   if Mix.env() == :dev do

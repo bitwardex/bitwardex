@@ -12,5 +12,6 @@ cd ./tmp/web
 git checkout tags/v2.5.0
 git submodule init
 git submodule update
+git apply ../../priv/set-vault-baseurl.patch
 npm install && npm run dist
 cp -r build ../../priv/static
