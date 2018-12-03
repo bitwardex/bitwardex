@@ -16,9 +16,6 @@ defmodule BitwardexWeb.HubSocket do
 
   def init(state) do
     # Now we are effectively inside the process that maintains the socket.
-    IO.inspect("Connected!")
-    IO.inspect(state)
-
     Process.send_after(self(), :ping, 15_000)
 
     {:ok, state}
@@ -33,7 +30,6 @@ defmodule BitwardexWeb.HubSocket do
       payload
       |> binary_part(0, byte_size(payload) - 1)
       |> Jason.decode!()
-      |> IO.inspect()
 
     case sanitized_json do
       %{"protocol" => "messagepack", "version" => 1} ->
