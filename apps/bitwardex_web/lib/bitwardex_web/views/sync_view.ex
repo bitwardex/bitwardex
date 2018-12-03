@@ -52,7 +52,7 @@ defmodule BitwardexWeb.SyncView do
     }
   end
 
-  defp render_domains() do
+  defp render_domains do
     global_domain_file =
       :bitwardex_web
       |> :code.priv_dir()
