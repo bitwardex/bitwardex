@@ -7,7 +7,7 @@ use Mix.Config
 # Configure your database
 config :bitwardex, Bitwardex.Repo,
   url: "${DATABASE_URL}",
-  pool_size: 20,
+  pool_size: 8,
   timeout: 60_000
 
 config :bitwardex, Bitwardex.Accounts, required_domain: "${ACCOUNTS_REQUIRED_DOMAIN}"
