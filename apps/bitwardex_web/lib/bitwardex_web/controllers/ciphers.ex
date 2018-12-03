@@ -20,13 +20,16 @@ defmodule BitwardexWeb.CiphersController do
       else
         _ -> params
       end
+
+    data_with_fields =
+      data
       |> Map.get("fields")
       |> case do
-        folders when is_list(folders) -> params
-        _ -> Map.put(params, "fields", [])
+        folders when is_list(folders) -> data
+        _ -> Map.put(data, "fields", [])
       end
 
-    with {:ok, cipher} <- Core.create_cipher(user, data) do
+    with {:ok, cipher} <- Core.create_cipher(user, data_with_fields) do
       preloaded_cipher = Repo.preload(cipher, [:collections])
 
       conn
