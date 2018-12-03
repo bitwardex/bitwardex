@@ -13,6 +13,7 @@ defmodule BitwardexWeb.CiphersController do
   def create(conn, params) do
     user = current_user(conn)
 
+    # Clean organisation cipher save request
     data =
       with {:ok, cipher_data} <- Map.fetch(params, "cipher"),
            collection_ids <- Map.get(params, "collection_ids", []) do
@@ -21,15 +22,20 @@ defmodule BitwardexWeb.CiphersController do
         _ -> params
       end
 
-    data_with_fields =
-      data
-      |> Map.get("fields")
-      |> case do
-        folders when is_list(folders) -> data
-        _ -> Map.put(data, "fields", [])
+    # Clean empty fields issue
+    data = Map.put(data, "fields", Map.get(data, "fields") || [])
+
+    # Clean empty URIs issue
+    data =
+      with {:ok, login_data} <- Map.fetch(data, "login") do
+        uris = Map.get(login_data, "uris") || []
+        updated_login_data = Map.put(login_data, "uris", uris)
+        Map.put(data, "login", updated_login_data)
+      else
+        _ -> data
       end
 
-    with {:ok, cipher} <- Core.create_cipher(user, data_with_fields) do
+    with {:ok, cipher} <- Core.create_cipher(user, data) do
       preloaded_cipher = Repo.preload(cipher, [:collections])
 
       conn
