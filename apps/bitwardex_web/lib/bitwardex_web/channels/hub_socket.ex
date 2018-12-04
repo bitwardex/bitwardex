@@ -3,20 +3,32 @@ defmodule BitwardexWeb.HubSocket do
 
   @initial_response [123, 125, 30]
 
+  alias Bitwardex.Accounts.Schemas.User
+
   def child_spec(_opts) do
     # We won't spawn any process, so let's return a dummy task
     %{id: Task, start: {Task, :start_link, [fn -> :ok end]}, restart: :transient}
   end
 
-  def connect(state) do
+  def connect(%{params: params}) do
     # Callback to retrieve relevant data from the connection.
     # The map contains options, params, transport and endpoint keys.
-    {:ok, state}
+
+    with {:ok, access_token} <- Map.fetch(params, "access_token"),
+         {:ok, user, _} <- BitwardexWeb.Guardian.resource_from_token(access_token) do
+      {:ok, %{current_user: user}}
+    else
+      _ -> :error
+    end
   end
 
-  def init(state) do
+  def connect(_), do: :error
+
+  def init(%{current_user: %User{} = user} = state) do
     # Now we are effectively inside the process that maintains the socket.
     Process.send_after(self(), :ping, 15_000)
+
+    Phoenix.PubSub.subscribe(BitwardexWeb.PubSub, "hub_notifications:user:#{user.id}")
 
     {:ok, state}
   end
@@ -44,6 +56,11 @@ defmodule BitwardexWeb.HubSocket do
 
     Process.send_after(self(), :ping, 15_000)
 
+    {:reply, :ok, {:binary, message}, state}
+  end
+
+  def handle_info({:send, payload}, state) do
+    message = encode_message(payload)
     {:reply, :ok, {:binary, message}, state}
   end
 
