@@ -28,7 +28,7 @@ defmodule BitwardexWeb.HubSocket do
     # Now we are effectively inside the process that maintains the socket.
     Process.send_after(self(), :ping, 15_000)
 
-    Phoenix.PubSub.subscribe(BitwardexWeb.PubSub, "hub_notifications:user:#{user.id}")
+    Phoenix.PubSub.subscribe(BitwardexWeb.PubSub, "notifications:user:#{user.id}")
 
     {:ok, state}
   end
