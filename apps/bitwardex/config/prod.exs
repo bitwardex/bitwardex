@@ -10,4 +10,6 @@ config :bitwardex, Bitwardex.Repo,
   pool_size: 8,
   timeout: 60_000
 
-config :bitwardex, Bitwardex.Accounts, required_domain: "${ACCOUNTS_REQUIRED_DOMAIN}"
+config :bitwardex, Bitwardex.Accounts,
+  required_domain: "${ACCOUNTS_REQUIRED_DOMAIN}",
+  create_organizations: "${ACCOUNTS_CREATE_ORGANIZATIONS}"

@@ -11,8 +11,23 @@ defmodule BitwardexWeb.OrganizationsController do
     user = current_user(conn)
 
     case Accounts.create_organization(params, user) do
-      {:ok, %{organization: organization}} -> json(conn, organization)
-      {:error, _step, _changeset, _changes_so_far} -> resp(conn, 500, "")
+      {:ok, %{organization: organization}} ->
+        json(conn, organization)
+
+      {:error, :not_allowed} ->
+        conn
+        |> put_status(500)
+        |> json(%{
+          "Message" => "The model state is invalid.",
+          "ValidationErrors" => %{"" => ["Organization creation is not allowed"]},
+          "ExceptionMessage" => nil,
+          "ExceptionStackTrace" => nil,
+          "InnerExceptionMessage" => nil,
+          "Object" => "error"
+        })
+
+      {:error, _step, _changeset, _changes_so_far} ->
+        resp(conn, 500, "")
     end
   end
 
