@@ -38,6 +38,7 @@ defmodule BitwardexWeb.Router do
       put "/ciphers/:id/admin", CiphersController, :update
       delete "/ciphers/:id/admin", CiphersController, :delete
       post "/ciphers/create", CiphersController, :create
+      put "/ciphers/:id/collections", CiphersController, :update_collections
       put "/ciphers/:id/collections-admin", CiphersController, :update_collections
       post "/ciphers/purge", CiphersController, :purge
 
