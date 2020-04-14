@@ -67,6 +67,7 @@ defmodule BitwardexWeb.Router do
         put "/collections/:id", CollectionsController, :update
         post "/collections/:id", CollectionsController, :update
         delete "/collections/:id", CollectionsController, :delete
+        post "/collections/:id/delete", CollectionsController, :delete
 
         # Collection users
         get "/collections/:id/users", CollectionsController, :get_users
@@ -74,9 +75,6 @@ defmodule BitwardexWeb.Router do
         put "/collections/:id/users", CollectionsController, :update_users
       end
 
-      post "/organizations/:organization_id/collections/:id/delete",
-           CollectionsController,
-           :delete
     end
   end
 
