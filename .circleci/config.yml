@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
@@ -57,7 +57,7 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
@@ -85,7 +85,7 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
@@ -118,7 +118,7 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
