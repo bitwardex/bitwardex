@@ -20,5 +20,5 @@ defmodule BitwardexWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :bitwardex_web
+  use Gettext, otp_app: :bitwardex
 end

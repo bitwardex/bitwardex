@@ -1,6 +1,6 @@
 defmodule BitwardexWeb.Guardian.AuthPipeline do
   use Guardian.Plug.Pipeline,
-    otp_app: :bitwardex_web,
+    otp_app: :bitwardex,
     module: BitwardexWeb.Guardian
 
   plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}

@@ -46,7 +46,7 @@ end
 # will be used by default
 
 release :bitwardex do
-  set(applications: [:bitwardex, :bitwardex_web])
-  set(version: current_version(:bitwardex_web))
+  set(applications: [:bitwardex])
+  set(version: current_version(:bitwardex))
   set(pre_start_hooks: "rel/hooks")
 end

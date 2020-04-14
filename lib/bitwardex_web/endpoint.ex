@@ -1,5 +1,5 @@
 defmodule BitwardexWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :bitwardex_web
+  use Phoenix.Endpoint, otp_app: :bitwardex
 
   socket "/socket", BitwardexWeb.UserSocket,
     websocket: true,
@@ -13,7 +13,7 @@ defmodule BitwardexWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :bitwardex_web,
+    from: :bitwardex,
     gzip: true,
     only:
       ~w(app connectors fonts images locales scripts browserconfig.xml duo-connector.html favicon.ico index.html manifest.json u2f-connector.html version.json)

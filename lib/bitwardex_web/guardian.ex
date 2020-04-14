@@ -1,6 +1,6 @@
 defmodule BitwardexWeb.Guardian do
   use Guardian,
-    otp_app: :bitwardex_web
+    otp_app: :bitwardex
 
   alias Bitwardex.Accounts
   alias Bitwardex.Accounts.Schemas.User

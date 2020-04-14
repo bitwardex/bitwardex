@@ -54,7 +54,7 @@ defmodule BitwardexWeb.SyncView do
 
   defp render_domains do
     global_domain_file =
-      :bitwardex_web
+      :bitwardex
       |> :code.priv_dir()
       |> Path.join("global_domains.json")
 

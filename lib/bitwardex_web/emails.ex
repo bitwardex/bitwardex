@@ -46,7 +46,7 @@ defmodule BitwardexWeb.Emails do
   end
 
   defp base_email do
-    host = Application.get_env(:bitwardex_web, BitwardexWeb.Endpoint)[:url][:host]
+    host = Application.get_env(:bitwardex, BitwardexWeb.Endpoint)[:url][:host]
 
     new_email()
     |> from("no-reply@#{host}")
