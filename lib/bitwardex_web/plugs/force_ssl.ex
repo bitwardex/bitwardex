@@ -6,12 +6,16 @@ defmodule BitwardexWeb.ForceSSLPlug do
 
   @impl true
   def call(conn, _opts) do
-    opts = Plug.SSL.init(get_config())
+    config = Application.get_env(:bitwardex, __MODULE__, Keyword.new())
 
-    Plug.SSL.call(conn, opts)
+    execute(conn, config)
   end
 
-  defp get_config do
-    Application.get_env(:bitwardex, __MODULE__, Keyword.new())
+  defp execute(conn, config) when config in [[], nil], do: conn
+
+  defp execute(conn, config) do
+    opts = Plug.SSL.init(config)
+
+    Plug.SSL.call(conn, opts)
   end
 end
