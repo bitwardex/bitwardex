@@ -27,12 +27,14 @@ defmodule BitwardexWeb.CiphersController do
 
     # Clean empty URIs issue
     data =
-      with {:ok, login_data} <- Map.fetch(data, "login") do
-        uris = Map.get(login_data, "uris") || []
-        updated_login_data = Map.put(login_data, "uris", uris)
-        Map.put(data, "login", updated_login_data)
-      else
-        _ -> data
+      case Map.fetch(data, "login") do
+        {:ok, login_data} ->
+          uris = Map.get(login_data, "uris") || []
+          updated_login_data = Map.put(login_data, "uris", uris)
+
+          Map.put(data, "login", updated_login_data)
+        _ ->
+          data
       end
 
     with {:ok, cipher} <- Core.create_cipher(user, data) do

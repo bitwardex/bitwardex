@@ -57,7 +57,7 @@
         {Credo.Check.Consistency.TabsOrSpaces},
 
         # Design Checks
-        {Credo.Check.Design.DuplicatedCode, excluded_macros: []},
+        {Credo.Check.Design.DuplicatedCode, false},
         {Credo.Check.Design.AliasUsage, false},
         {Credo.Check.Design.TagTODO, false},
         {Credo.Check.Design.TagFIXME, false},
