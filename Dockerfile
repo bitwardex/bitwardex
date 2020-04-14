@@ -1,8 +1,15 @@
 # Build Elixir release
 
-FROM library/elixir:1.7.3-alpine as builder
+FROM node:10.13 AS node-builder
 
-RUN apk --no-cache --update add bash build-base curl alpine-sdk coreutils nodejs nodejs-npm && \
+WORKDIR /app
+ADD . .
+
+RUN bash download_web_client.sh
+
+FROM hexpm/elixir:1.10.2-erlang-22.3.2-alpine-3.11.3 as builder
+
+RUN apk --no-cache --update add bash build-base curl alpine-sdk coreutils python nodejs nodejs-npm && \
   rm -rf /var/cache/apk/*
 
 RUN mix local.hex --force && \
@@ -11,27 +18,21 @@ RUN mix local.hex --force && \
 
 WORKDIR /app
 ENV MIX_ENV prod
-ADD . .
+
+COPY --from=node-builder /app/ .
 
 RUN mix deps.get
-
-RUN cd /app/apps/bitwardex_web/ && \
-  bash download_web_client.sh && \
-  cd /app
-
 RUN mix phx.digest
-RUN mix release --env=prod
+RUN mix release
 
 # Definitive image
 
-FROM library/alpine:3.7
+FROM library/alpine:3.11.3
 
 RUN apk --update --no-cache add bash openssl curl alpine-sdk coreutils && \
   rm -rf /var/cache/apk/*
 
-ENV REPLACE_OS_VARS true
-
 WORKDIR /app
 COPY --from=builder /app/_build/prod/rel/bitwardex .
 
-CMD ["./bin/bitwardex", "foreground"]
+CMD ["./bin/bitwardex", "start"]
