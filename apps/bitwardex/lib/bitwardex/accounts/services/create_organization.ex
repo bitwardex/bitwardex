@@ -9,7 +9,7 @@ defmodule Bitwardex.Accounts.Services.CreateOrganization do
   alias Ecto.Multi
 
   def call(params, user) do
-    if check_creation_permission do
+    if check_creation_permission() do
       Multi.new()
       |> Multi.insert(:organization, Organization.changeset(%Organization{}, params))
       |> Multi.run(:collection, &create_collection(&1, &2, params))
