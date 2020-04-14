@@ -18,8 +18,8 @@ $ mix deps.get
 And you have to create you own secrets using the example files:
 
 ```
-$ cp apps/bitwardex/config/dev.secret.example.exs apps/bitwardex/config/dev.secret.exs
-$ cp apps/bitwardex/config/test.secret.example.exs apps/bitwardex/config/test.secret.exs
+$ cp config/dev.secret.example.exs config/dev.secret.exs
+$ cp config/test.secret.example.exs config/test.secret.exs
 ```
 
 These files include, among other things, the credentials to access your local
@@ -39,7 +39,6 @@ If you want to use the web vault, you should the the script that downloads and
 builds it:
 
 ```
-$ cd apps/bitwardex_web
 $ bash download_web_client.sh
 ```
 

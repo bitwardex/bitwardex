@@ -3,7 +3,7 @@ jobs:
   dependencies_and_build:
     parallelism: 1
     docker:
-      - image: circleci/elixir:1.7.3
+      - image: circleci/elixir:1.10.2
         environment:
           MIX_ENV: test
 
@@ -12,37 +12,37 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
       - restore_cache:
           keys:
-            - v1-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
-            - v1-mix-cache-{{ .Branch }}
-            - v1-mix-cache
+            - v2-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - v2-mix-cache-{{ .Branch }}
+            - v2-mix-cache
       - restore_cache:
           keys:
-            - v1-build-cache-{{ .Branch }}
-            - v1-build-cache
+            - v2-build-cache-{{ .Branch }}
+            - v2-build-cache
 
       - run: mix deps.get
       - run: mix compile --force --warnings-as-errors
 
       - save_cache:
-          key: v1-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+          key: v2-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
           paths: "deps"
       - save_cache:
-          key: v1-mix-cache-{{ .Branch }}
+          key: v2-mix-cache-{{ .Branch }}
           paths: "deps"
       - save_cache:
-          key: v1-mix-cache
+          key: v2-mix-cache
           paths: "deps"
       - save_cache:
-          key: v1-build-cache-{{ .Branch }}
+          key: v2-build-cache-{{ .Branch }}
           paths: "_build"
       - save_cache:
-          key: v1-build-cache
+          key: v2-build-cache
           paths: "_build"
 
   format:
@@ -57,19 +57,19 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
       - restore_cache:
           keys:
-            - v1-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
-            - v1-mix-cache-{{ .Branch }}
-            - v1-mix-cache
+            - v2-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - v2-mix-cache-{{ .Branch }}
+            - v2-mix-cache
       - restore_cache:
           keys:
-            - v1-build-cache-{{ .Branch }}
-            - v1-build-cache
+            - v2-build-cache-{{ .Branch }}
+            - v2-build-cache
 
       - run: mix format --check-formatted
 
@@ -85,19 +85,19 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
       - restore_cache:
           keys:
-            - v1-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
-            - v1-mix-cache-{{ .Branch }}
-            - v1-mix-cache
+            - v2-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - v2-mix-cache-{{ .Branch }}
+            - v2-mix-cache
       - restore_cache:
           keys:
-            - v1-build-cache-{{ .Branch }}
-            - v1-build-cache
+            - v2-build-cache-{{ .Branch }}
+            - v2-build-cache
 
       - run: mix credo list --strict --format=oneline
 
@@ -118,19 +118,19 @@ jobs:
     steps:
       - checkout
 
-      - run: cp apps/bitwardex/config/test.secret.ci.exs apps/bitwardex/config/test.secret.exs
+      - run: cp config/test.secret.ci.exs config/test.secret.exs
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
       - restore_cache:
           keys:
-            - v1-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
-            - v1-mix-cache-{{ .Branch }}
-            - v1-mix-cache
+            - v2-mix-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - v2-mix-cache-{{ .Branch }}
+            - v2-mix-cache
       - restore_cache:
           keys:
-            - v1-build-cache-{{ .Branch }}
-            - v1-build-cache
+            - v2-build-cache-{{ .Branch }}
+            - v2-build-cache
 
       - run:
           name: Wait for DB

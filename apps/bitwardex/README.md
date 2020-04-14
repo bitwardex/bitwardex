@@ -1,3 +1,0 @@
-# Bitwardex
-
-**TODO: Add description**
