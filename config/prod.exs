@@ -10,36 +10,11 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :bitwardex, BitwardexWeb.Endpoint,
-  http: [port: "${PORT}", compress: true],
-  url: [scheme: "${SCHEME}", host: "${HOST}", port: "${EXTERNAL_PORT}"],
-  secret_key_base: "${SECRET_KEY_BASE}",
   code_reloader: false,
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
-config :bitwardex, BitwardexWeb.Guardian,
-  issuer: "Bitwardex",
-  secret_key: "${GUARDIAN_SECRET_KEY}"
-
-# Mailer settings
-config :bitwardex, BitwardexWeb.Mailer,
-  adapter: Bamboo.SMTPAdapter,
-  server: "${SMTP_SERVER}",
-  port: "${SMTP_PORT}",
-  username: "${SMTP_USERNAME}",
-  password: "${SMTP_PASSWORD}",
-  tls: :always
-
-# Configure your database
-config :bitwardex, Bitwardex.Repo,
-  url: "${DATABASE_URL}",
-  pool_size: 8,
-  timeout: 60_000
-
-config :bitwardex, Bitwardex.Accounts,
-  required_domain: "${ACCOUNTS_REQUIRED_DOMAIN}",
-  create_organizations: "${ACCOUNTS_CREATE_ORGANIZATIONS}"
-
+config :bitwardex, BitwardexWeb.Guardian, issuer: "Bitwardex"
 
 # Do not print debug messages in production
 config :logger, level: :info

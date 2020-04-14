@@ -5,6 +5,8 @@ defmodule BitwardexWeb.Endpoint do
     websocket: true,
     longpoll: false
 
+  plug BitwardexWeb.ForceSSLPlug
+
   plug BitwardexWeb.IndexFilePlug
 
   # Serve at "/" the static files from "priv/static" directory.
