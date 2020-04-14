@@ -50,7 +50,8 @@ defmodule Bitwardex.MixProject do
       {:postgrex, ">= 0.0.0"},
       # Common
       {:jason, "~> 1.0"},
-      {:gettext, "~> 0.11"}
+      {:gettext, "~> 0.11"},
+      {:credo, "~> 1.3", only: [:dev, :test], runtime: false}
     ]
   end
 
