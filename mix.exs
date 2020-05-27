@@ -4,7 +4,7 @@ defmodule Bitwardex.MixProject do
   def project do
     [
       app: :bitwardex,
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -16,7 +16,7 @@ defmodule Bitwardex.MixProject do
           include_erts: true,
           include_executables_for: [:unix],
           applications: [runtime_tools: :permanent]
-        ],
+        ]
       ],
       default_release: :bitwardex
     ]
