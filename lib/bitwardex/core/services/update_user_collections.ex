@@ -34,7 +34,9 @@ defmodule Bitwardex.Core.Services.UpdateUserCollections do
         |> Multi.delete_all(:user_collections_removed, user_collections_to_remove)
         |> Multi.run(
           :user_collectionss_added_updated,
-          &add_or_update_user_collections(&1, org_user, collections)
+          fn repo, _ ->
+            add_or_update_user_collections(repo, org_user, collections)
+          end
         )
         |> Repo.transaction()
 
@@ -43,10 +45,10 @@ defmodule Bitwardex.Core.Services.UpdateUserCollections do
     end
   end
 
-  defp add_or_update_user_collections(_repo, org_user, collections) do
+  defp add_or_update_user_collections(repo, org_user, collections) do
     user_collections =
       org_user
-      |> Repo.preload(:user_collections)
+      |> repo.preload(:user_collections)
       |> Map.get(:user_collections)
 
     collections
@@ -56,7 +58,7 @@ defmodule Bitwardex.Core.Services.UpdateUserCollections do
           # Update user that is already assigned
           cu
           |> UserCollection.changeset(%{read_only: read_only})
-          |> Repo.update()
+          |> repo.update()
 
         nil ->
           # Assign a user to the colelction that jas not been asigned previously
@@ -66,7 +68,7 @@ defmodule Bitwardex.Core.Services.UpdateUserCollections do
             user_organization_id: org_user.id,
             read_only: read_only
           })
-          |> Repo.insert()
+          |> repo.insert()
       end
     end)
     |> Enum.reduce(%{ok: [], error: []}, fn result, acc ->
