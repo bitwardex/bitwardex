@@ -338,7 +338,11 @@ defmodule BitwardexWeb.AccountsController do
       "token_type" => "Bearer",
       "refresh_token" => refresh_token,
       "Key" => user.key,
-      "PrivateKey" => user.keys.encrypted_private_key
+      "PrivateKey" => user.keys.encrypted_private_key,
+      "Kdf" => user.kdf,
+      "KdfIterations" => user.kdf_iterations,
+      "ResetMasterPassword" => false,
+      "scope" => "api offline_access"
     })
   end
 
