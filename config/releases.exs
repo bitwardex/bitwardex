@@ -16,8 +16,7 @@ config :bitwardex, BitwardexWeb.Endpoint,
   secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
 
 if System.get_env("FORCE_SSL") in ["1", "true"] do
-  config :bitwardex, BitwardexWeb.ForceSSLPlug,
-      rewrite_on: [:x_forwarded_proto]
+  config :bitwardex, BitwardexWeb.ForceSSLPlug, rewrite_on: [:x_forwarded_proto]
 end
 
 config :bitwardex, BitwardexWeb.Guardian, secret_key: System.fetch_env!("GUARDIAN_SECRET_KEY")
@@ -34,6 +33,7 @@ config :bitwardex, BitwardexWeb.Mailer,
 # Configure your database
 config :bitwardex, Bitwardex.Repo,
   url: System.fetch_env!("DATABASE_URL"),
+  ssl: System.fetch_env!("DATABASE_SSL") in ["TRUE", "true", 1],
   pool_size: 8,
   timeout: 60_000
 
