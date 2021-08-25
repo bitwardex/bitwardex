@@ -33,6 +33,7 @@ defmodule BitwardexWeb.CiphersController do
           updated_login_data = Map.put(login_data, "uris", uris)
 
           Map.put(data, "login", updated_login_data)
+
         _ ->
           data
       end

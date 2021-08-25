@@ -7,7 +7,11 @@ defmodule Bitwardex.Application do
 
   def start(_type, _args) do
     children = [
+      # Start the PubSub system
+      {Phoenix.PubSub, name: BitwardexWeb.PubSub},
+      # Start the database repository
       Bitwardex.Repo,
+      # Start the Endpoint (http/https)
       BitwardexWeb.Endpoint
     ]
 

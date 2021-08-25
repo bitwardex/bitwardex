@@ -1,0 +1,58 @@
+name: Elixir CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      MIX_ENV: test
+
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: bitwardex_dev
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      id: cache-deps
+      with:
+        path: deps
+        key: ${{ runner.os }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+    - uses: actions/cache@v1
+      id: cache-build
+      with:
+        path: _build
+        key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+    - name: Prepare test environment
+      run: |
+        cp config/test.secret.ci.exs config/test.secret.exs
+        rm -rf _build/test/lib/bitwardex
+    - uses: erlef/setup-beam@v1
+      with:
+        otp-version: 24.0.0
+        elixir-version: 1.12.2
+    - name: Fetch and compile dependencies
+      run: |
+        mix deps.get
+        mix deps.compile
+    - name: Compile application
+      run: |
+        mix compile --warnings-as-erros
+    - name: Check format
+      run: |
+        mix format --check-formatted
+    - name: Credo
+      run: |
+        mix credo
+    - name: Run Tests
+      run: |
+        mix test

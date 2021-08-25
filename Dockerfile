@@ -7,9 +7,9 @@ ADD . .
 
 RUN bash download_web_client.sh
 
-FROM hexpm/elixir:1.10.2-erlang-22.3.2-alpine-3.11.3 as builder
+FROM hexpm/elixir:1.12.2-erlang-24.0-alpine-3.13.3 as builder
 
-RUN apk --no-cache --update add bash build-base curl alpine-sdk coreutils python nodejs nodejs-npm && \
+RUN apk --no-cache --update add bash build-base curl alpine-sdk coreutils python3 && \
   rm -rf /var/cache/apk/*
 
 RUN mix local.hex --force && \
@@ -27,7 +27,7 @@ RUN mix release
 
 # Definitive image
 
-FROM library/alpine:3.11.3
+FROM library/alpine:3.13.3
 
 RUN apk --update --no-cache add bash openssl curl alpine-sdk coreutils && \
   rm -rf /var/cache/apk/*
