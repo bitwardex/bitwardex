@@ -43,23 +43,24 @@ defmodule Bitwardex.MixProject do
   defp deps do
     [
       # Web
-      {:phoenix, "~> 1.4.16"},
-      {:phoenix_pubsub, "~> 1.1"},
-      {:phoenix_ecto, "~> 4.1"},
-      {:phoenix_html, "~> 2.14"},
+      {:phoenix, "~> 1.5.0"},
+      {:phoenix_pubsub, "~> 2.0"},
       {:plug_cowboy, "~> 2.1"},
+      {:phoenix_ecto, "~> 4.4"},
+      {:phoenix_html, "~> 3.0"},
       # Authentication
-      {:guardian, "~> 2.1"},
+      {:guardian, "~> 2.2"},
       # E-mail sending
-      {:bamboo, "~> 1.4"},
-      {:bamboo_smtp, "~> 2.1.0"},
+      {:bamboo, "~> 2.2"},
+      {:bamboo_phoenix, "~> 1.0"},
+      {:bamboo_smtp, "~> 4.1.0"},
       # Database
-      {:ecto_sql, "~> 3.4"},
+      {:ecto_sql, "~> 3.7"},
       {:postgrex, ">= 0.0.0"},
       # Common
-      {:jason, "~> 1.1"},
-      {:gettext, "~> 0.17"},
-      {:credo, "~> 1.3", only: [:dev, :test], runtime: false}
+      {:jason, "~> 1.2"},
+      {:gettext, "~> 0.18"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
     ]
   end
 

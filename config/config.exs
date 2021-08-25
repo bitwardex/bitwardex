@@ -24,7 +24,7 @@ config :bitwardex, BitwardexWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "QIKegsGS3oGoSvg6LppC7txk5LaLT06wS5lCh3AWXcDpobTXFoH6Ogz+kigZKyH5",
   render_errors: [view: BitwardexWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: BitwardexWeb.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: BitwardexWeb.PubSub
 
 config :bitwardex, :generators, context_app: :bitwardex
 
