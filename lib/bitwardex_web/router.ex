@@ -75,7 +75,6 @@ defmodule BitwardexWeb.Router do
         post "/collections/:id/users", CollectionsController, :update_users
         put "/collections/:id/users", CollectionsController, :update_users
       end
-
     end
   end
 
