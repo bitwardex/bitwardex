@@ -33,6 +33,7 @@ defmodule BitwardexWeb.Router do
 
       resources "/folders", FoldersController, only: [:create, :update, :delete]
       resources "/ciphers", CiphersController, only: [:create, :update, :delete]
+      put "/ciphers/:id/delete", CiphersController, :delete
       get "/ciphers/:id/admin", CiphersController, :show
       post "/ciphers/admin", CiphersController, :create
       put "/ciphers/:id/admin", CiphersController, :update
